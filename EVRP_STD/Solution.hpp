@@ -34,9 +34,11 @@ public:
     void init_mem_space(int num_vhs, int num_customers);
     void init_data();
     void random_init();
-    void Potvin_init(int * list_seeds, double **Distances);
+    void Potvin_init(int * list_seeds, double **Distances, double *Cap, double max_cap);
     double compute_cost(double ** Distances, double ** Best_Station_Distances);
     double compute_over_cap(double *Demands, double max_capacity_vh);
+    void Potvin_init_test(int * list_seeds, double **Distances, double *Demands, double max_cap);
+    void reset_in_select(bool *list);
     
 };
 #endif /* Solution_hpp */

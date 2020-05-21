@@ -41,11 +41,12 @@ public:
     void save_sol_to_pool(int *seq, int * pool_seq, int num_node);
     
     //optimize local search for best sol
+    //void update_Best_Search(int **plitted_route, int R1, int R2, int idx1, int idx2, int num_c, int num_v);
     void Interchange10APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
-    void Interchange20APR(int *seq, double **Distances, int num_c, int num_v);
-    void Interchange11APR(int *seq, double **Distances, int num_c, int num_v);
-    void Interchange21APR(int *seq, double **Distances, int num_c, int num_v);
-    void Interchange22APR(int *seq, double **Distances, int num_c, int num_v);
+    void Interchange20APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
+    void Interchange11APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
+    void Interchange21APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
+    void Interchange22APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void local_search(int *seq, double **Distances, int num_c, int num_v, int num);
 };
 #endif /* Util_hpp */

@@ -643,7 +643,7 @@ void Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, 
 //        }
 //    }
 
-    int i, j, k, temp, cont;
+    int i, j, k, temp;
     int ar[1000];
     for(i = 0; i < loop; i++)
         ar[i] = i;
@@ -668,7 +668,7 @@ void Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, 
         {
             int num_node = temp_route_split[j][0];
             // search for the best position
-            for(int s = 1; s <= num_node; s++)
+            for(int s = 1; s < num_node; s++)
             {
                 int node_route_1 = temp_route_split[j][s];
                 if(temp_route_split[j][s] < num_c)
@@ -741,6 +741,704 @@ void Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, 
     
 }
 
+void Util::Interchange20APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)
+{
+    
+    // split route
+    int temp_route_split[num_v][num_c + num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_v + num_c; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    int s;
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        Best_Route_Education[s] = sol[s];
+    }
+    
+    double best_cost = compute_cost_sol(sol, Distances, num_c, num_v);
+    double init_cost = best_cost;
+    
+    // split route
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            temp_route_split[index_route][0] = index_node;
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v)
+                    return;
+            }
+        }
+    }
+    
+    // finish split route
+    int i, j, k, temp, cont;
+    
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    for(i = 0;i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int best_index_1 = -1;
+    int best_index_2 = -1;
+    int best_route_1 = -1;
+    int best_route_2 = -1;
+    
+    double best_gain = 0.0;
+    for(i = 0; i < loop; i++)
+    {
+        j = comb[ar[i]][0];
+        k = comb[ar[i]][1];
+        if(temp_route_split[j][0] > 3 && temp_route_split[k][0] > 1 && j != k)
+        {
+            // search for position
+            int numc_route_1 = temp_route_split[j][0];
+            int numc_route_2 = temp_route_split[k][0];
+            for(int s  = 1; s < numc_route_1 - 2; s++)
+            {
+                int nodeR1 = temp_route_split[j][s];
+                int nextNodeR1 = temp_route_split[j][s + 1];
+                int prev1 = 0;
+                if(s > 1) prev1 = temp_route_split[j][s - 1];
+                int nextR1 = temp_route_split[j][s + 2];
+                if(nextR1 > num_c) nextR1 = 0;
+                double reduce = Distances[prev1][nodeR1] + Distances[nextNodeR1][nextR1] - Distances[prev1][nextR1];
+                for(int g = 1; g < numc_route_2 - 1; g++)
+                {
+                    int nodeR2 = temp_route_split[k][g];
+                    int nextNodeR2 = temp_route_split[k][g + 1];
+                    int prev2 = 0;
+                    if(g > 1) prev2 = temp_route_split[k][g - 1];
+                    int nextR2 = temp_route_split[k][g + 2];
+                    double increase = Distances[nodeR2][nodeR1] + Distances[nextNodeR1][nextNodeR2] - Distances[nodeR2][nextNodeR2];
+                    
+                    double gain = reduce - increase;
+                    if(gain > 0.0 && gain > best_gain)
+                    {
+                        best_gain = gain;
+                        best_index_1 = s;
+                        best_index_2 = g;
+                        best_route_1 = j;
+                        best_route_2 = k;
+                    }
+                }
+            }
+        }
+    }
+    
+    // update best route to sol
+    if(best_index_1 != -1 && best_index_2 != -1)
+    {
+//        printf("\nInterchange 20: %d - %d - %d - %d", best_route_1, best_route_2, best_index_1, best_index_2);
+//            printf("\ndata route split\n");
+//            for(int k = 0 ; k <= index_route; k++)
+//            {
+//                printf("\n");
+//                int num_route_node = temp_route_split[k][0];
+//                for(int m = 0; m <= num_route_node; m++)
+//                {
+//                    printf("%d -> ", temp_route_split[k][m]);
+//                }
+//            }
+        int nodeR1 = temp_route_split[best_route_1][best_index_1];
+        int nextR1 = temp_route_split[best_route_1][best_index_1 + 1];
+        int nodeR2 = temp_route_split[best_route_2][best_index_2];
+        int nextR2 = temp_route_split[best_route_2][best_index_2 + 1];
+        // change route
+        int curr_idx = 0;
+        sol[curr_idx] = 0;
+        int num_node_1 = temp_route_split[best_route_1][0];
+        int num_node_2 = temp_route_split[best_route_2][0];
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[best_route_1][i1] == nodeR1 || temp_route_split[best_route_1][i1] == nextR1) continue;
+            else{
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_1][i1];
+            }
+        }
+        
+        for(int i1 = 1; i1 <= best_index_2; i1++)
+        {
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_2][i1];
+        }
+        curr_idx++;
+        sol[curr_idx] = nodeR1;
+        curr_idx++;
+        sol[curr_idx] = nextR1;
+        for(int i1 = best_index_2 + 1; i1 <= num_node_2; i1++)
+        {
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_2][i1];
+        }
+        // copy all other routes
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != best_route_1 && i2 != best_route_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    curr_idx++;
+                    sol[curr_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+void Util::Interchange11APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)
+{
+    int temp_route_split[num_v][num_c + num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_v + num_c; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    
+    int s;
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        Best_Route_Education[s] = sol[s];
+    }
+    
+    double best_cost = compute_cost_sol(sol, Distances, num_c, num_v);
+    double init_cost = best_cost;
+    
+    //split route
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            temp_route_split[index_route][0] = index_node;
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v)
+                    return;
+            }
+        }
+    }
+    
+    int i, j, k, temp;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int best_index_1 = -1;
+    int best_index_2 = -1;
+    int best_route_1 = -1;
+    int best_route_2 = -1;
+            printf("\ndata route split\n");
+            for(int k = 0 ; k <= index_route; k++)
+            {
+                printf("\n");
+                int num_route_node = temp_route_split[k][0];
+                for(int m = 0; m <= num_route_node; m++)
+                {
+                    printf("%d -> ", temp_route_split[k][m]);
+                }
+            }
+    double best_gain = 0.0;
+    for(i = 0; i < loop; i++)
+    {
+        j = comb[ar[i]][0];
+        k = comb[ar[i]][1];
+        if(temp_route_split[j][0] > 1 && temp_route_split[k][0] > 1)
+        {
+            int numc_route_1 = temp_route_split[j][0];
+            int numc_route_2 = temp_route_split[k][0];
+            for(int s = 1; s < numc_route_1 - 1; s++)
+            {
+                int nodeR1 = temp_route_split[j][s];
+                int nextNodeR1 = temp_route_split[j][s + 1];
+                int prev1 = 0;
+                if(s > 1) prev1 = temp_route_split[j][s - 1];
+                int nextR1 = temp_route_split[j][s + 2];
+                if(nextR1 > num_c) nextR1 = 0;
+                
+                for(int g = 1; g < numc_route_2 - 1; g++)
+                {
+                    int nodeR2 = temp_route_split[k][g];
+                    int nextNodeR2 = temp_route_split[k][g + 1];
+                    int prev2 = 0;
+                    if(g > 1) prev2 = temp_route_split[k][g - 1];
+                    int nextR2 = temp_route_split[k][g + 2];
+                    double reduce1 = ((Distances[prev1][nodeR1] + Distances[nodeR1][nextNodeR1]) - (Distances[prev1][nodeR2] + Distances[nodeR2][nextNodeR1]));
+                    double reduce2 = ((Distances[prev2][nodeR2] + Distances[nodeR2][nextNodeR2]) - (Distances[prev2][nodeR1] + Distances[nodeR1][nextNodeR2]));
+                    
+                    double gain = reduce1 + reduce2;
+                    if(gain > 0 && gain > best_gain)
+                    {
+                        best_gain = gain;
+                        best_index_1 = s;
+                        best_index_2 = g;
+                        best_route_1 = j;
+                        best_route_2 = k;
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    // update route to sol
+    if(best_index_1 != -1 && best_index_2 != -1)
+    {
+//        printf("\nInterchange 20: %d - %d - %d - %d", best_route_1, best_route_2, best_index_1, best_index_2);
+//        printf("\ndata route split\n");
+//        for(int k = 0 ; k <= index_route; k++)
+//        {
+//            printf("\n");
+//            int num_route_node = temp_route_split[k][0];
+//            for(int m = 0; m <= num_route_node; m++)
+//            {
+//                printf("%d -> ", temp_route_split[k][m]);
+//            }
+//        }
+        int curr_idx = 0;
+        sol[curr_idx] = 0;
+        int num_node_1 = temp_route_split[best_route_1][0];
+        int num_node_2 = temp_route_split[best_route_2][0];
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(i1 == best_index_1)
+            {
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_2][best_index_2];
+            } else {
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_1][i1];
+            }
+        }
+        
+        for(int i1 = 1; i1 <= num_node_2; i1++)
+        {
+            if(i1 == best_index_2)
+            {
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_1][best_index_1];
+            } else {
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_2][i1];
+            }
+        }
+        
+        for(int i2 = 0 ; i2 <= index_route; i2++)
+        {
+            if(i2 != best_route_1 && i2 != best_route_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    curr_idx++;
+                    sol[curr_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+void Util::Interchange21APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)
+{
+    int temp_route_split[num_v][num_c + num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_v + num_c; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    int s;
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        Best_Route_Education[s] = sol[s];
+    }
+    double best_cost = compute_cost_sol(sol, Distances, num_c, num_v);
+    double init_cost = best_cost;
+    //split route
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            temp_route_split[index_route][0] = index_node;
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v)
+                    return;
+            }
+        }
+    }
+    
+    int i, j, k, temp;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int best_index_1 = -1;
+    int best_index_2 = -1;
+    int best_route_1 = -1;
+    int best_route_2 = -1;
+    
+    double best_gain = 0.0;
+    printf("\ndata route split\n");
+    for(int k = 0 ; k <= index_route; k++)
+    {
+        printf("\n");
+        int num_route_node = temp_route_split[k][0];
+        for(int m = 0; m <= num_route_node; m++)
+        {
+            printf("%d -> ", temp_route_split[k][m]);
+        }
+    }
+    for(i = 0; i < loop; i++)
+    {
+        j = comb[ar[i]][0];
+        k = comb[ar[i]][1];
+        if(temp_route_split[j][0] > 3 && temp_route_split[k][0] > 1)
+        {
+            int numc_route_1 = temp_route_split[j][0];
+            int numc_route_2 = temp_route_split[k][0];
+            for(int s = 1; s < numc_route_1 - 2; s++)
+            {
+                int nodeR1 = temp_route_split[j][s];
+                int nextNodeR1 = temp_route_split[j][s + 1];
+                int prev1 = 0;
+                if(s > 1) prev1 = temp_route_split[j][s - 1];
+                int nextR1 = temp_route_split[j][s + 2];
+                if(nextR1 > num_c) nextR1 = 0;
+                
+                for(int g = 1; g < numc_route_2 - 1; g++)
+                {
+                    int nodeR2 = temp_route_split[k][g];
+                    int nextNodeR2 = temp_route_split[k][g + 1];
+                    int prev2 = 0;
+                    if(g > 1) prev2 = temp_route_split[k][g - 1];
+                    int nextR2 = temp_route_split[k][g + 2];
+                    
+                    double reduce1 = ((Distances[prev1][nodeR1] + Distances[nodeR1][nextNodeR1] + Distances[nextNodeR1][nextR1]) - (Distances[prev1][nodeR2] + Distances[nodeR2][nextR1]));
+                    double reduce2 = ((Distances[prev2][nodeR2] + Distances[nodeR2][nextNodeR2]) - (Distances[prev2][nodeR1] + Distances[nodeR1][nextNodeR1] + Distances[nextNodeR1][nextNodeR2]));
+                    
+                    double gain = reduce1 + reduce2;
+                    if(gain > 0 && gain > best_gain)
+                    {
+                        best_gain = gain;
+                        best_index_1 = s;
+                        best_index_2 = g;
+                        best_route_1 = j;
+                        best_route_2 = k;
+                    }
+                }
+            }
+        }
+    }
+    
+    if(best_index_1 != -1 && best_index_2 != -1)
+    {
+        int curr_idx = 0;
+        sol[curr_idx] = 0;
+        int num_node_1 = temp_route_split[best_route_1][0];
+        int num_node_2 = temp_route_split[best_route_2][0];
+        
+        int nodeR1 = temp_route_split[best_route_1][best_index_1];
+        int nextR1 = temp_route_split[best_route_1][best_index_1 + 1];
+        int nodeR2 = temp_route_split[best_route_2][best_index_2];
+        int nextR2 = temp_route_split[best_route_2][best_index_2 + 1];
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[best_route_1][i1] == nodeR1)
+            {
+                curr_idx++;
+                sol[curr_idx] = nodeR2;
+            }
+            else if(temp_route_split[best_route_1][i1] == nextR1) continue;
+            else {
+                curr_idx++;
+                sol[curr_idx] = temp_route_split[best_route_1][i1];
+            }
+        }
+        
+        for(int i1 = 1; i1 < best_index_2; i1++)
+        {
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_2][i1];
+        }
+        curr_idx++;
+        sol[curr_idx] = nodeR1;
+        curr_idx++;
+        sol[curr_idx] = nextR1;
+        for(int i1 = best_index_2 + 1; i1 <= num_node_2; i1++)
+        {
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_2][i1];
+        }
+        
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != best_route_1 && i2 != best_route_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    curr_idx++;
+                    sol[curr_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+    
+            printf("\nInterchange 20: %d - %d - %d - %d", best_route_1, best_route_2, best_index_1, best_index_2);
+            printf("\ndata route split\n");
+            for(int k = 0 ; k <= index_route; k++)
+            {
+                printf("\n");
+                int num_route_node = temp_route_split[k][0];
+                for(int m = 0; m <= num_route_node; m++)
+                {
+                    printf("%d -> ", temp_route_split[k][m]);
+                }
+            }
+    
+}
+
+void Util::Interchange22APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)
+{
+    int temp_route_split[num_v][num_c + num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_v + num_c; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    int s;
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        Best_Route_Education[s] = sol[s];
+    }
+    double best_cost = compute_cost_sol(sol, Distances, num_c, num_v);
+    double init_cost = best_cost;
+    
+    //split route
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            temp_route_split[index_route][0] = index_node;
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v)
+                    return;
+            }
+        }
+    }
+    
+    int i, j, k, temp;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int best_index_1 = -1;
+    int best_index_2 = -1;
+    int best_route_1 = -1;
+    int best_route_2 = -1;
+    double best_gain = 0.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        for(i = 0; i < loop; i++)
+        {
+            j = comb[ar[i]][0];
+            k = comb[ar[i]][1];
+            if(temp_route_split[j][0] > 3 && temp_route_split[k][0] > 3)
+            {
+                int numc_route_1 = temp_route_split[j][0];
+                int numc_route_2 = temp_route_split[k][0];
+                for(int s = 1; s < numc_route_1 - 2; s++)
+                {
+                    int nodeR1 = temp_route_split[j][s];
+                    int nextNodeR1 = temp_route_split[j][s + 1];
+                    int prev1 = 0;
+                    if(s > 1) prev1 = temp_route_split[j][s - 1];
+                    int nextR1 = temp_route_split[j][s + 2];
+                    if(nextR1 > num_c) nextR1 = 0;
+                    for(int g = 1; g < numc_route_2 - 2; g++)
+                    {
+                        int nodeR2 = temp_route_split[k][g];
+                        int nextNodeR2 = temp_route_split[k][g + 1];
+                        int prev2 = 0;
+                        if(g > 1) prev2 = temp_route_split[k][g - 1];
+                        int nextR2 = temp_route_split[k][g + 2];
+                        
+                        double reduce1 = ((Distances[prev1][nodeR1] + Distances[nextNodeR1][nextR1]) - (Distances[prev1][nodeR2] + Distances[nextNodeR2][nextR1]));
+                        double reduce2 = ((Distances[prev2][nodeR2] + Distances[nextNodeR2][nextR2]) - (Distances[prev2][nodeR1] + Distances[nextNodeR1][nextR2]));
+                        
+                        double gain = reduce1 + reduce2;
+                        if(gain > 0 && gain > best_gain)
+                        {
+                            best_gain = gain;
+                            best_index_1 = s;
+                            best_index_2 = g;
+                            best_route_1 = j;
+                            best_route_2 = k;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if(best_index_1 != -1 && best_index_2 != -1)
+    {
+//                printf("\nInterchange 20: %d - %d - %d - %d", best_route_1, best_route_2, best_index_1, best_index_2);
+//                printf("\ndata route split\n");
+//                for(int k = 0 ; k <= index_route; k++)
+//                {
+//                    printf("\n");
+//                    int num_route_node = temp_route_split[k][0];
+//                    for(int m = 0; m <= num_route_node; m++)
+//                    {
+//                        printf("%d -> ", temp_route_split[k][m]);
+//                    }
+//                }
+        int curr_idx = 0;
+        sol[curr_idx] = 0;
+        int num_node_1 = temp_route_split[best_route_1][0];
+        int num_node_2 = temp_route_split[best_route_2][0];
+        
+        int nodeR1 = temp_route_split[best_route_1][best_index_1];
+        int nextR1 = temp_route_split[best_route_1][best_index_1 + 1];
+        int nodeR2 = temp_route_split[best_route_2][best_index_2];
+        int nextR2 = temp_route_split[best_route_2][best_index_2 + 1];
+        
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[best_route_1][i1] == nodeR1)
+            {
+                curr_idx++;
+                sol[curr_idx] = nodeR2;
+                continue;
+            }
+            if(temp_route_split[best_route_1][i1] == nextR1)
+            {
+                curr_idx++;
+                sol[curr_idx] = nextR2;
+                continue;
+            }
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_1][i1];
+        }
+        
+        for(int i1 = 1; i1 <= num_node_2; i1++)
+        {
+            if(temp_route_split[best_route_2][i1] == nodeR2)
+            {
+                curr_idx++;
+                sol[curr_idx] = nodeR1;
+                continue;
+            }
+            if(temp_route_split[best_route_2][i1] == nextR2)
+            {
+                curr_idx++;
+                sol[curr_idx] = nextR1;
+                continue;
+            }
+            curr_idx++;
+            sol[curr_idx] = temp_route_split[best_route_2][i1];
+        }
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != best_route_1 && i2 != best_route_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    curr_idx++;
+                    sol[curr_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
 void Util::local_search(int *seq, double **Distances, int num_c, int num_v, int num)
 {
     int ar[50];
@@ -772,17 +1470,17 @@ void Util::local_search(int *seq, double **Distances, int num_c, int num_v, int 
             case 0:
                 Interchange10APR(seq, Distances, num_c, num_v, comb, loop);
                 break;
-//            case 1:
-//                Interchange20APR(seq, Distances, num_c, num_v);
-//                break;
-//            case 2:
-//                Interchange11APR(seq, Distances, num_c, num_v);
-//                break;
-//            case 3:
-//                Interchange21APR(seq, Distances, num_c, num_v);
-//                break;
-//            case 4:
-//                Interchange22APR(seq, Distances, num_c, num_v);
+            case 1:
+                Interchange20APR(seq, Distances, num_c, num_v, comb, loop);
+                break;
+            case 2:
+                Interchange11APR(seq, Distances, num_c, num_v, comb, loop);
+                break;
+            case 3:
+                Interchange21APR(seq, Distances, num_c, num_v, comb, loop);
+                break;
+            case 4:
+                Interchange22APR(seq, Distances, num_c, num_v, comb, loop);
                 break;
             default:
                 break;
