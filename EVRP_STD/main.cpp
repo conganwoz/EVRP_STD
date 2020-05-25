@@ -300,14 +300,15 @@ void find_nearest_cus() {
         for(int k = 0; k < 10; k++)
         {
             index++;
-            if(List_Customers[index].id == i) index++;
+            if(List_Customers[index].id == i || List_Customers[index].id == 0) index++;
+            if(List_Customers[index].id == i || List_Customers[index].id == 0) index++;
             List_Nearest_Cus[i][k] = List_Customers[index].id;
         }
     }
     
-    for(int i = 1 ; i < NUM_CUSTOMERS; i++)
+    for(int i = 1; i < NUM_CUSTOMERS; i++)
     {
-        printf("\n cus %d: ", i);
+        printf("\ncus: %d\n", i);
         for(int j = 0; j < 10; j++)
         {
             printf("%d -> ", List_Nearest_Cus[i][j]);
@@ -624,8 +625,11 @@ void cross_over(){
         // Education 2 better sol
         count_pool++;
         if(is_choose_child_1) {
+//            if(Child1.is_feasible) U.Tabu_search(Child1.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child1.fitness, List_Nearest_Cus, Child1.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool] = Child1;
             
+//            U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            if(Parent_Pool_Sol[count_pool].is_feasible) U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
@@ -634,8 +638,12 @@ void cross_over(){
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
             Parent_Pool_Sol[count_pool].fitness = Parent_Pool_Sol[count_pool].cost + ALPHA * Parent_Pool_Sol[count_pool].over_capacity;
         } else {
+//            if(Child2.is_feasible) U.Tabu_search(Child2.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child2.fitness, List_Nearest_Cus, Child2.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool] = Child2;
             
+//            U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
+            if(Parent_Pool_Sol[count_pool].is_feasible) U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             
@@ -648,8 +656,12 @@ void cross_over(){
         
         count_pool++;
         if(is_choose_child_3) {
+//            if(Child3.is_feasible) U.Tabu_search(Child3.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child3.fitness, List_Nearest_Cus, Child3.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool] = Child3;
             
+//            U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
+            if(Parent_Pool_Sol[count_pool].is_feasible) U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             
@@ -660,8 +672,12 @@ void cross_over(){
             Parent_Pool_Sol[count_pool].fitness = Parent_Pool_Sol[count_pool].cost + ALPHA * Parent_Pool_Sol[count_pool].over_capacity;
         }
         else {
+//            if(Child4.is_feasible) U.Tabu_search(Child4.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child4.fitness, List_Nearest_Cus, Child4.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool] = Child4;
             
+//            U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
+            if(Parent_Pool_Sol[count_pool].is_feasible) U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             U.Education(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, Distances, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             
@@ -671,6 +687,14 @@ void cross_over(){
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
             Parent_Pool_Sol[count_pool].fitness = Parent_Pool_Sol[count_pool].cost + ALPHA * Parent_Pool_Sol[count_pool].over_capacity;
         }
+        
+//        if(Child1.is_feasible) U.Tabu_search(Child1.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child1.fitness, List_Nearest_Cus, Child1.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+
+//        if(Child2.is_feasible) U.Tabu_search(Child2.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child2.fitness, List_Nearest_Cus, Child2.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+
+//        if(Child3.is_feasible) U.Tabu_search(Child3.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child3.fitness, List_Nearest_Cus, Child3.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+
+//        if(Child4.is_feasible) U.Tabu_search(Child4.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Child4.fitness, List_Nearest_Cus, Child4.cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
         
     }
     // create new pool
@@ -715,7 +739,7 @@ int main(int argc, const char * argv[]) {
     init_population();
     compute_meta_data();
 
-    for(int i = 0; i < 500; i++)
+    for(int i = 0; i < 50; i++)
     {
         build_Roulette_wheel_arr();
         select_parent_to_pool_distinct();

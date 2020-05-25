@@ -12,6 +12,7 @@
 		045C0F10246D58C300CFBBEA /* Solution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045C0F0E246D58C300CFBBEA /* Solution.cpp */; };
 		045C0F15246D9EE600CFBBEA /* E-n22-k4.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 045C0F14246D9EE500CFBBEA /* E-n22-k4.evrp */; };
 		0465D180247BC8A7006CE739 /* Customer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0465D17E247BC8A7006CE739 /* Customer.cpp */; };
+		0465D183247BD41B006CE739 /* Move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0465D181247BD41B006CE739 /* Move.cpp */; };
 		04A5E77E24715B73007B73DB /* E-n23-k3.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E77D24715B73007B73DB /* E-n23-k3.evrp */; };
 		04A5E78024715C20007B73DB /* E-n23-k3.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E77F24715C20007B73DB /* E-n23-k3.evrp */; };
 		04A5E78224715C54007B73DB /* E-n30-k3.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E78124715C54007B73DB /* E-n30-k3.evrp */; };
@@ -63,6 +64,8 @@
 		045C0F14246D9EE500CFBBEA /* E-n22-k4.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n22-k4.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n22-k4.evrp"; sourceTree = "<group>"; };
 		0465D17E247BC8A7006CE739 /* Customer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Customer.cpp; sourceTree = "<group>"; };
 		0465D17F247BC8A7006CE739 /* Customer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Customer.hpp; sourceTree = "<group>"; };
+		0465D181247BD41B006CE739 /* Move.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Move.cpp; sourceTree = "<group>"; };
+		0465D182247BD41B006CE739 /* Move.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Move.hpp; sourceTree = "<group>"; };
 		04A5E77D24715B73007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E77F24715C20007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E78124715C54007B73DB /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n30-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -130,6 +133,8 @@
 				04F969F32473147700CF3B68 /* result.txt */,
 				0465D17E247BC8A7006CE739 /* Customer.cpp */,
 				0465D17F247BC8A7006CE739 /* Customer.hpp */,
+				0465D181247BD41B006CE739 /* Move.cpp */,
+				0465D182247BD41B006CE739 /* Move.hpp */,
 			);
 			path = EVRP_STD;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 				045C0F10246D58C300CFBBEA /* Solution.cpp in Sources */,
 				045C0F08246D579C00CFBBEA /* main.cpp in Sources */,
 				0465D180247BC8A7006CE739 /* Customer.cpp in Sources */,
+				0465D183247BD41B006CE739 /* Move.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

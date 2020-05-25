@@ -11,9 +11,14 @@
 
 #include <stdio.h>
 #include "Solution.hpp"
+#include "Move.hpp"
 class Util {
 public:
     int Best_Route_Education[200];
+    int Best_Tabu_Search[200];
+    bool FOUND_NEW_BEST = false;
+    double FIT_BEST = 0.0;
+    int tabu[200][200];
     double compute_H_value(Solution *Sols, int num_sols);
     double compute_AVG_q(Solution *Sols, int num_sols);
     double compute_alpha(double H, double avg_q);
@@ -48,5 +53,8 @@ public:
     void Interchange21APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void Interchange22APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void local_search(int *seq, double **Distances, int num_c, int num_v, int num);
+    void Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
+    Move CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
+    bool validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances);
 };
 #endif /* Util_hpp */
