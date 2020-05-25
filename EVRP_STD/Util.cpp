@@ -253,6 +253,7 @@ void Util::two_exchange_education(int *sol, double **Distances, int num_c, int n
         }
         
         if((parent[begin] > num_c + num_v) || (parent[end] > num_c + num_v)) break;
+        if(begin >= num_c + num_v || end >= num_c + num_v) break;
         
         for(i = begin; i < end - 2; i++)
         {
@@ -280,8 +281,6 @@ void Util::two_exchange_education(int *sol, double **Distances, int num_c, int n
                         Best_Route_Education[m] = Best_Route_Education[j - 1 - (m - i - 2)];
                         Best_Route_Education[j - 1 - (m - i - 2)] =temp_node;
                     }
-                    
-                    
                 }
             }
         }
@@ -520,6 +519,11 @@ double Util::dist_comsum(double distance, double eng_consum)
 
 bool Util::find_through_station(int * sol, bool *through_stat, int num_c, int num_v, double max_eng, double eng_consum, double ** Distances,int **Best_Stat, double **Best_Stat_Distances)
 {
+    bool is_back_track[num_c + num_v];
+    for(int i = 0; i < num_c + num_v; i++)
+    {
+        is_back_track[i] = false;
+    }
     int j;
     int first_route_num = num_c;
     int num_node = num_c + num_v;
@@ -545,9 +549,10 @@ bool Util::find_through_station(int * sol, bool *through_stat, int num_c, int nu
         {
             if(is_feasible)
             {
-                if(available_eng > dist_comsum(Distances[node][next_node], eng_consum))
+                double dist = Distances[node][next_node];
+                if(available_eng > dist_comsum(dist, eng_consum))
                 {
-                    available_eng -= dist_comsum(Distances[node][next_node], eng_consum);
+                    available_eng -= dist_comsum(dist, eng_consum);
                     through_stat[j] = false;
                     if(available_eng < 0) is_feasible = false;
                 } else
@@ -558,6 +563,26 @@ bool Util::find_through_station(int * sol, bool *through_stat, int num_c, int nu
                         if(available_eng < 0)
                             is_feasible = false;
                         through_stat[j] = true;
+                    } else {
+                        // try to back track 1 time to find better sol
+                        int prev_node = sol[j - 1];
+                        if(prev_node >= num_c) prev_node = 0;
+                        double prev_avail = available_eng + dist_comsum(Distances[prev_node][node], eng_consum);
+
+                        through_stat[j - 1] = true;
+                        int best_prev_stat = Best_Stat[prev_node][node];
+                        if(prev_avail > dist_comsum(Distances[best_prev_stat][prev_node], eng_consum) && max_eng > dist_comsum(Distances[best_prev_stat][node], eng_consum) && !is_back_track[j])
+                        {
+                            available_eng = max_eng - dist_comsum(Distances[best_prev_stat][node], eng_consum);
+                            is_back_track[j] = true;
+                            j--;
+                        }
+                        else {
+                            is_feasible = false;
+                            through_stat[j] = false;
+                        }
+//                        is_feasible = false;
+//                        through_stat[j] = false;
                     }
                 }
             }else
@@ -566,7 +591,6 @@ bool Util::find_through_station(int * sol, bool *through_stat, int num_c, int nu
             }
         }
     }
-    
     return is_feasible;
 }
 
@@ -575,8 +599,9 @@ bool Util::Education(int *seq_node, bool *though_station, double **Distances, in
     set_init_best(seq_node, num_c + num_v);
     two_exchange_education(seq_node, Distances, num_c, num_v);
     or_exhcange(seq_node, Distances, num_c, num_v);
-    cross_exchange(seq_node, Distances, num_c, num_v);
-    return find_through_station(seq_node, though_station, num_c, num_v, max_eng, eng_consum, Distances, best_stat, best_stat_distances);
+    //cross_exchange(seq_node, Distances, num_c, num_v);
+    //return find_through_station(seq_node, though_station, num_c, num_v, max_eng, eng_consum, Distances, best_stat, best_stat_distances);
+    return false;
 }
 
 void Util::save_sol_to_pool(int *seq, int *pool_seq, int num_node)
@@ -631,18 +656,6 @@ void Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, 
             }
         }
     }
-    
-//    printf("\ndata route split\n");
-//    for(int k = 0 ; k <= index_route; k++)
-//    {
-//        printf("\n");
-//        int num_route_node = temp_route_split[k][0];
-//        for(int m = 0; m <= num_route_node; m++)
-//        {
-//            printf("%d -> ", temp_route_split[k][m]);
-//        }
-//    }
-
     int i, j, k, temp;
     int ar[1000];
     for(i = 0; i < loop; i++)
@@ -1486,5 +1499,4 @@ void Util::local_search(int *seq, double **Distances, int num_c, int num_v, int 
                 break;
         }
     }
-    
 }

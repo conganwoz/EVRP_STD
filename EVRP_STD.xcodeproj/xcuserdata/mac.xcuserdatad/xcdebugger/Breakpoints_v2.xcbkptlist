@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.9504139"
+            timestampString = "611943658.605327"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "190"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.9505481"
+            timestampString = "611943658.605626"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "192"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.950629"
+            timestampString = "611943658.605768"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "142"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.950699"
+            timestampString = "611943658.605922"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "166"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.950763"
+            timestampString = "611943658.6060489"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "238"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Solution.cpp"
-            timestampString = "611775136.950826"
+            timestampString = "611943658.606222"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "234"
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.9508899"
+            timestampString = "612093690.024298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "281"
-            endingLineNumber = "281"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
             landmarkName = "random_select_seeds()"
             landmarkType = "9">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.951528"
+            timestampString = "612093690.02551"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "352"
+            endingLineNumber = "352"
             landmarkName = "random_select_seeds()"
             landmarkType = "9">
          </BreakpointContent>
@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.952577"
+            timestampString = "612093690.0266401"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "341"
-            endingLineNumber = "341"
+            startingLineNumber = "411"
+            endingLineNumber = "411"
             landmarkName = "compute_meta_data()"
             landmarkType = "9">
          </BreakpointContent>
@@ -154,7 +154,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.952988"
+            timestampString = "612093690.028124"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.9530489"
+            timestampString = "612093690.028239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
+            startingLineNumber = "333"
+            endingLineNumber = "333"
             landmarkName = "prepare_data()"
             landmarkType = "9">
          </BreakpointContent>
@@ -186,7 +186,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.953575"
+            timestampString = "612093690.029211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "235"
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.953679"
+            timestampString = "612093690.0293649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "479"
-            endingLineNumber = "479"
+            startingLineNumber = "568"
+            endingLineNumber = "568"
             landmarkName = "cross_over()"
             landmarkType = "9">
          </BreakpointContent>
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.954353"
+            timestampString = "612093690.030516"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "398"
-            endingLineNumber = "398"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "Util::cross_exchange(int *sol, double **Distances, int num_c, int num_v)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.hpp"
-            timestampString = "611539308.422346"
+            timestampString = "611943658.61561"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "36"
@@ -250,7 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.hpp"
-            timestampString = "611539308.4224631"
+            timestampString = "611943658.61576"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "49"
@@ -266,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.hpp"
-            timestampString = "611539308.422525"
+            timestampString = "611943658.615858"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "24"
@@ -282,23 +282,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.9545569"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "646"
-            endingLineNumber = "646"
-            landmarkName = "Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, int comb[][2], int loop)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.95465"
+            timestampString = "612093690.030708"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "659"
@@ -314,11 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.9547319"
+            timestampString = "612093690.030804"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "666"
-            endingLineNumber = "666"
+            startingLineNumber = "672"
+            endingLineNumber = "672"
             landmarkName = "Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, int comb[][2], int loop)"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,11 +314,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/Util.cpp"
-            timestampString = "611775136.954798"
+            timestampString = "612093690.030893"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "901"
-            endingLineNumber = "901"
+            startingLineNumber = "679"
+            endingLineNumber = "679"
+            landmarkName = "Util::Interchange10APR(int *sol, double **Distances, int num_c, int num_v, int comb[][2], int loop)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EVRP_STD/Util.cpp"
+            timestampString = "612093690.030978"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "914"
+            endingLineNumber = "914"
             landmarkName = "Util::Interchange20APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)"
             landmarkType = "7">
          </BreakpointContent>
@@ -346,13 +346,45 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "611775136.954862"
+            timestampString = "612093690.031062"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "311"
-            endingLineNumber = "311"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "init_population()"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EVRP_STD/Util.cpp"
+            timestampString = "612093690.0321079"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "566"
+            endingLineNumber = "566"
+            landmarkName = "Util::find_through_station(int * sol, bool *through_stat, int num_c, int num_v, double max_eng, double eng_consum, double ** Distances,int **Best_Stat, double **Best_Stat_Distances)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EVRP_STD/Util.cpp"
+            timestampString = "612093690.032236"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "576"
+            endingLineNumber = "576"
+            landmarkName = "Util::find_through_station(int * sol, bool *through_stat, int num_c, int num_v, double max_eng, double eng_consum, double ** Distances,int **Best_Stat, double **Best_Stat_Distances)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
