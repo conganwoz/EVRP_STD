@@ -39,6 +39,7 @@ public:
     double compute_over_cap(double *Demands, double max_capacity_vh);
     void Potvin_init_test(int * list_seeds, double **Distances, double *Demands, double max_cap);
     void reset_in_select(bool *list);
+    void copy_seq_node(Solution c2);
     
 };
 #endif /* Solution_hpp */

@@ -1715,7 +1715,7 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
     }
     double finess_Zt = init_fitness;
     FIT_BEST = init_fitness;
-    printf("\n+++++++++++++++++++++ BEGIN TABU SEARCH +++++++++++++++++++\n");
+    //printf("\n+++++++++++++++++++++ BEGIN TABU SEARCH +++++++++++++++++++ FITNESS: %lf\n", finess_Zt);
     for(int it = 0; it < 100; it++)
     {
         Move best_move = CallEvaluate(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
@@ -1729,8 +1729,12 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
             // create new route
             update_seq(seq, i, j, num_c + num_v);
             if(FOUND_NEW_BEST) {
-                printf("\nmove_data: finess: %lf - varFitness: %lf, cus: %d - %d", finess_Zt, best_move.varFitness, i, j);
-                update_seq(Best_Tabu_Search, i, j, num_c + num_v);
+                //printf("\nmove_data: finess: %lf - varFitness: %lf, cus: %d - %d", finess_Zt, best_move.varFitness, i, j);
+//                update_seq(Best_Tabu_Search, i, j, num_c + num_v);
+                for(int s = 0; s < num_c + num_v; s++)
+                {
+                    Best_Tabu_Search[s] = seq[s];
+                }
             }
         }
     }

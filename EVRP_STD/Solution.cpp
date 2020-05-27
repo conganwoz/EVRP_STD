@@ -783,3 +783,11 @@ double Solution::compute_over_cap(double *Demands, double max_capacity_vh)
     
     return sum_capacity_over;
 }
+
+void Solution::copy_seq_node(Solution c2)
+{
+    for(int i = 0 ; i < num_c + num_v; i++)
+    {
+        seq_node[i] = c2.seq_node[i];
+    }
+}
