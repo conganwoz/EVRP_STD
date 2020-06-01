@@ -131,6 +131,93 @@ void Util::Permutation_Order_1(Solution sol1, Solution sol2, int *child, int num
     child[0] = 0;
 }
 
+void Util::Permutation_Order_1_v1(Solution sol1, Solution sol2, int *child, int num_node)
+{
+    int i, begin_rand, end_rand;
+    int seq_choosen[num_node];
+    for(i = 0; i < num_node; i++)
+    {
+        seq_choosen[i] = i;
+    }
+    
+    begin_rand = (int)(rand() % (num_node - 1)) + 1;
+    int temp = seq_choosen[begin_rand];
+    seq_choosen[begin_rand] = seq_choosen[num_node - 1];
+    seq_choosen[num_node - 1] = temp;
+    begin_rand = seq_choosen[num_node - 1];
+    
+    end_rand = (int)(rand() % (num_node - 2)) + 1;
+    temp = seq_choosen[end_rand];
+    seq_choosen[end_rand] = seq_choosen[num_node - 2];
+    seq_choosen[num_node - 2] = temp;
+    end_rand = seq_choosen[num_node - 2];
+    
+    if(begin_rand > end_rand)
+    {
+        temp = begin_rand;
+        begin_rand = end_rand;
+        end_rand = temp;
+    }
+    
+    for(i = begin_rand; i <= end_rand; i++)
+    {
+        child[i] = sol1.seq_node[i];
+    }
+    
+    // create rotate seq
+    int temp_sol2[200];
+    int index = 0;
+    for(int j = end_rand + 1; j < num_node; j++)
+    {
+        index++;
+        temp_sol2[index] = sol2.seq_node[j];
+    }
+    
+    for(int j = 1; j <= end_rand; j++)
+    {
+        index++;
+        temp_sol2[index] = sol2.seq_node[j];
+    }
+    
+    temp_sol2[0] = 0;
+    
+    printf("\n INSPECR Order 1 v1:\n");
+    for(int k = 0; k < num_node; k++)
+        printf("%d -> ", temp_sol2[k]);
+    
+    int j = 1;
+    for(i = 1; i < begin_rand; i++)
+    {
+        for(; j < num_node; j++)
+        {
+            int node_2 = temp_sol2[j];
+            if(!check_selected_customer(sol1.seq_node, begin_rand, end_rand, node_2))
+            {
+                child[i] = node_2;
+                j++;
+                break;
+            }
+        }
+    }
+    
+    for(i = end_rand + 1; i < num_node; i++)
+    {
+        for(; j < num_node; j++)
+        {
+            int node_2 = temp_sol2[j];
+            if(!check_selected_customer(sol1.seq_node, begin_rand, end_rand, node_2))
+            {
+                child[i] = node_2;
+                j++;
+                break;
+            }
+        }
+    }
+    child[0] = 0;
+}
+
+
+
 void Util::Cycle(Solution sol1, Solution sol2, int *child, int num_node)
 {
 //    printf("\n--------\n");
@@ -1272,7 +1359,6 @@ void Util::Interchange21APR(int *sol, double **Distances, int num_c, int num_v, 
                     printf("%d -> ", temp_route_split[k][m]);
                 }
             }
-    
 }
 
 void Util::Interchange22APR(int *sol, double **Distances, int num_c, int num_v, int (*comb)[2], int loop)
@@ -1382,17 +1468,6 @@ void Util::Interchange22APR(int *sol, double **Distances, int num_c, int num_v, 
     
     if(best_index_1 != -1 && best_index_2 != -1)
     {
-//                printf("\nInterchange 20: %d - %d - %d - %d", best_route_1, best_route_2, best_index_1, best_index_2);
-//                printf("\ndata route split\n");
-//                for(int k = 0 ; k <= index_route; k++)
-//                {
-//                    printf("\n");
-//                    int num_route_node = temp_route_split[k][0];
-//                    for(int m = 0; m <= num_route_node; m++)
-//                    {
-//                        printf("%d -> ", temp_route_split[k][m]);
-//                    }
-//                }
         int curr_idx = 0;
         sol[curr_idx] = 0;
         int num_node_1 = temp_route_split[best_route_1][0];
@@ -1478,29 +1553,38 @@ void Util::local_search(int *seq, double **Distances, int num_c, int num_v, int 
             comb[k][1] = i;
         }
     loop = num_v * (num_v - 1);
+    printf("\nTest LOCAL SEARCH\n");
     for(i = 0; i < num; i++)
     {
         switch (ar[i]) {
             case 0:
                 Interchange10APR(seq, Distances, num_c, num_v, comb, loop);
+                //printf("\nin interchange_10\n");
                 break;
             case 1:
                 Interchange20APR(seq, Distances, num_c, num_v, comb, loop);
+                //printf("\nin interchange_20\n");
                 break;
             case 2:
                 Interchange11APR(seq, Distances, num_c, num_v, comb, loop);
+                //printf("\nin interchange_11\n");
                 break;
             case 3:
                 Interchange21APR(seq, Distances, num_c, num_v, comb, loop);
+                //printf("\nin interchange_21\n");
                 break;
             case 4:
                 Interchange22APR(seq, Distances, num_c, num_v, comb, loop);
+                //printf("\nin interchange_22\n");
                 break;
             default:
                 break;
         }
     }
+    printf("\n END LOCAL SEARCH\n");
 }
+
+// CODE FOR TABU SEARCH
 
 int find_index(int *seq, int num_node, int cus)
 {
@@ -1511,16 +1595,35 @@ int find_index(int *seq, int num_node, int cus)
     return  -1;
 }
 
-bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances){
+bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int idx_j, int idx_i, int node_j, int node_i){
     bool is_feasible = true;
     int current_idx = begin;
     double available_eng = max_eng;
     bool is_begin = true;
-    while ((seq[current_idx] != 0 && seq[current_idx] < num_c) || (is_begin && seq[current_idx] == 0)) {
+    int temp_route[num_c + num_v];
+    int index = begin - 1;
+    for(int s = begin; s < num_c + num_v; s++)
+    {
+        if(s == idx_i)
+        {
+            continue;
+        } else if(s == idx_j)
+        {
+            index++;
+            temp_route[index] = seq[s];
+            index++;
+            temp_route[index] = node_i;
+        } else
+        {
+            index++;
+            temp_route[index] = seq[s];
+        }
+    }
+    while ((temp_route[current_idx] != 0 && temp_route[current_idx] < num_c) || (is_begin && temp_route[current_idx] == 0)) {
         is_begin = false;
-        int current_node = seq[current_idx];
+        int current_node = temp_route[current_idx];
         if(current_node >= num_c) current_node = 0;
-        int next_node = seq[current_idx + 1];
+        int next_node = temp_route[current_idx + 1];
         if(next_node >= num_c) next_node = 0;
         if(current_node != next_node)
         {
@@ -1530,7 +1633,7 @@ bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, doub
         if(available_eng > dist_comsum(dist, eng_consum))
         {
             available_eng -= dist_comsum(dist, eng_consum);
-            if(available_eng < 0) return  false;
+            if(available_eng < 0) return false;
         } else
         {
             int best_stat = Best_Stat[current_node][next_node];
@@ -1542,7 +1645,7 @@ bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, doub
                 // try to back track 1 time to find better sol
                 if(current_idx == begin) return false;
                 else {
-                    int prev_node = seq[current_idx - 1];
+                    int prev_node = temp_route[current_idx - 1];
                     if(prev_node >= num_c) prev_node = 0;
                     double prev_avail_eng = available_eng + dist_comsum(Distances[prev_node][current_node], eng_consum);
                     
@@ -1553,6 +1656,7 @@ bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, doub
                 }
             }
         }
+        current_idx++;
     }
     return  true;
 }
@@ -1586,34 +1690,72 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
             
             move.varCost = Distances[prev_node_i][next_node_i] + Distances[j][i] + Distances[i][next_node_j] - (Distances[prev_node_i][i] + Distances[i][next_node_i] + Distances[j][next_node_j]);
             //move.varVioCap =
-            double sum_cap = 0.0;
+            double sum_cap_j = 0.0;
             int before_j = idx_j - 1;
             int after_j = idx_j + 1;
+            bool is_on_the_route = false;
             if(before_j >= 0)
             {
                 while(seq[before_j] < num_c && seq[before_j] != 0 && before_j >= 0)
                 {
+                    if(idx_i == before_j) is_on_the_route = true;
                     int node = seq[before_j];
-                    sum_cap += Demands[node];
+                    sum_cap_j += Demands[node];
                     before_j--;
                 }
             } else before_j = 0;
             
             while (seq[after_j] < num_c && seq[after_j] != 0) {
-                sum_cap += Demands[seq[after_j]];
+                if(after_j == idx_i) is_on_the_route = true;
+                sum_cap_j += Demands[seq[after_j]];
                 after_j++;
             }
             
-            sum_cap += (Demands[j] + Demands[i]);
-            if(sum_cap - max_cap > 0) move.varVioCap = sum_cap - max_cap;
-            else move.varVioCap = 0.0;
+            sum_cap_j += (Demands[j] + Demands[i]);
+            if(is_on_the_route) {
+                move.varVioCap = 0.0;
+            } else
+            {
+                // find over cap of route i
+                double sum_cap_i = Demands[i];
+                int before_i = idx_i - 1;
+                int after_i = idx_j + 1;
+                if(before_i >= 0)
+                {
+                    while (seq[before_i] < num_c && seq[before_i] != 0 && before_i >= 0)
+                    {
+                        int node = seq[before_i];
+                        sum_cap_i += Demands[node];
+                        before_i--;
+                    }
+                } else before_i = 0;
+                while (seq[after_i] < num_c && seq[after_i] != 0)
+                {
+                    sum_cap_i += Demands[seq[after_i]];
+                    after_i++;
+                }
+                
+                double over_cap_j = sum_cap_j - max_cap;
+                if(over_cap_j < 0.0) over_cap_j = 0.0;
+                
+                double over_cap_i = sum_cap_i - max_cap;
+                if(over_cap_i < 0.0) over_cap_i = 0.0;
+                
+                double over_cap_i_new = (sum_cap_i - Demands[i]) - max_cap;
+                if(over_cap_i_new < 0.0) over_cap_i_new = 0.0;
+                
+                double over_cap_j_new = (sum_cap_j + Demands[i]) - max_cap;
+                if(over_cap_j_new < 0.0) over_cap_j_new = 0.0;
+                
+                move.varVioCap = (over_cap_i_new + over_cap_j_new) - (over_cap_i + over_cap_j);
+            }
             
             //printf("\nVioCap: %lf\n", move.varVioCap);
             
             move.varFitness = move.varCost + move.varVioCap * ALPHA;
             if(before_j == -1) before_j = 0;
             // validate through stat
-            if(move.varVioCap > 0 || !validate_through_stat(seq, before_j, num_c, num_v, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances))
+            if(move.varVioCap > 0 || !validate_through_stat(seq, before_j, num_c, num_v, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances, idx_j, idx_i, j, i))
             {
                 move.feasible = false;
             }
@@ -1638,6 +1780,7 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                 {
                     if(FOUND){
                         if(move.varFitness < best_move.varFitness){
+                            printf("\nfound_new_better\n");
                             best_move = move;
                             best_move.cus_1 = i;
                             best_move.cus_2 = j;
@@ -1646,12 +1789,14 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                     }
                 } else {
                     if(FOUND) {
+                        printf("\nFOUNd BEST\n");
                         FOUND_NEW_BEST = true;
                         best_move = move;
                         best_move.cus_1 = i;
                         best_move.cus_2 = j;
                         best_move.varFitness = move.varFitness;
                     } else if(move.varFitness < best_move.varFitness) {
+                        printf("\nFOUND BETTER\n");
                         best_move = move;
                         best_move.cus_1 = i;
                         best_move.cus_2 = j;
@@ -1700,6 +1845,7 @@ void update_seq(int *origin, int i, int j, int num_node){
 
 void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances)
 {
+    int tabu_num = (int)((num_c + num_v)*0.1);
     // reset tabu counter
     for(int i = 0; i < num_c; i++)
     {
@@ -1716,15 +1862,15 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
     double finess_Zt = init_fitness;
     FIT_BEST = init_fitness;
     //printf("\n+++++++++++++++++++++ BEGIN TABU SEARCH +++++++++++++++++++ FITNESS: %lf\n", finess_Zt);
-    for(int it = 0; it < 100; it++)
+    for(int it = 0; it < 16000; it++)
     {
         Move best_move = CallEvaluate(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
         if(best_move.cus_1 != -1)
         {
             int i = best_move.cus_1;
             int j = best_move.cus_2;
-            tabu[i][j] = it + 10;
-            tabu[j][i]= it + 10;
+            tabu[i][j] = it + tabu_num;
+            tabu[j][i]= it + tabu_num;
             finess_Zt = finess_Zt + best_move.varFitness;
             // create new route
             update_seq(seq, i, j, num_c + num_v);
@@ -1742,5 +1888,1110 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
     for(int i = 0; i < num_c + num_v; i++)
     {
         seq[i] = Best_Tabu_Search[i];
+    }
+}
+
+
+
+// LOCAL SEARCH FIX
+
+bool Util::validate_partial_route(int *route, int idx_j, int node_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int num_c)
+{
+    int num_node = route[0];
+    int temp[200];
+    temp[0] = 0;
+    int curr_idx = 0;
+    for(int i = 1; i <= num_node; i++)
+    {
+        if(i == idx_j)
+        {
+            curr_idx++;
+            temp[curr_idx] = route[i];
+            curr_idx++;
+            temp[curr_idx] = node_i;
+        } else
+        {
+            curr_idx++;
+            temp[curr_idx] = route[i];
+        }
+    }
+    
+    curr_idx = 0;
+    double avail_eng = max_eng;
+    while(curr_idx < num_node + 1)
+    {
+        int current_node = temp[curr_idx];
+        int next_node = temp[curr_idx + 1];
+        if(next_node > num_c) next_node = 0;
+        
+        if(current_node != next_node)
+        {
+            double dist = Distances[current_node][next_node];
+            if(avail_eng > dist_comsum(dist, eng_consum))
+                avail_eng -= dist_comsum(dist, eng_consum);
+            else
+            {
+                int best_stat = Best_Stat[current_node][next_node];
+                if(avail_eng > dist_comsum(Distances[best_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_stat][next_node], eng_consum))
+                {
+                    avail_eng = max_eng - dist_comsum(Distances[best_stat][next_node], eng_consum);
+                    if(avail_eng < 0.0) return false;
+                } else
+                {
+                    // try to back track 1 time to find better sol
+                    if(curr_idx == 0) return false;
+                    else
+                    {
+                        int prev_node = temp[curr_idx - 1];
+                        double prev_avail_eng = avail_eng + dist_comsum(Distances[prev_node][current_node], eng_consum);
+                        
+                        int best_prev_stat = Best_Stat[prev_node][current_node];
+                        if(prev_avail_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum))
+                        {
+                            avail_eng = max_eng - dist_comsum(Distances[best_prev_stat][current_node], eng_consum);
+                        } else return false;
+                    }
+                }
+            }
+        }
+        curr_idx++;
+    }
+    return true;
+}
+
+void Util::local_search_FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
+{
+    int num = 5;
+    int ar[50];
+    int i, j, k, temp, loop;
+    
+    for(i = 0; i < num; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < num - 1; i++)
+    {
+        j = (int)(rand() % 2);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int comb[1000][2];
+    k = -1;
+    for(i = 0; i < num_v - 1; i++)
+        for(j = i + 1; j < num_v; j++)
+        {
+            comb[++k][0] = i;
+            comb[k][1] = j;
+            comb[++k][0] = j;
+            comb[k][1] = i;
+        }
+    
+    loop = num_v * (num_v - 1);
+    
+    for(i = 0; i < num; i++)
+    {
+        switch (ar[i]) {
+            case 0:
+                printf("\nin optimise10\n");
+                Interchange10FIX(sol, Distances, num_c, num_v, Demands, max_cap, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, loop, comb);
+                break;
+            case 1:
+                printf("\nin optimise20\n");
+                Interchange20FIX(sol, Distances, num_c, num_v, Demands, max_cap, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, loop, comb);
+                break;
+            case 2:
+                printf("\nin optimise11\n");
+                Interchange11FIX(sol, Distances, num_c, num_v, Demands, max_cap, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, loop, comb);
+                break;
+            case 3:
+                printf("\nin optimise21\n");
+                Interchange21FIX(sol, Distances, num_c, num_v, Demands, max_cap, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, loop, comb);
+                break;
+            case 4:
+                printf("\nin optimise21\n");
+                Interchange22FIX(sol, Distances, num_c, num_v, Demands, max_cap, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, loop, comb);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Util::Interchange10FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int loop, int comb[][2])
+{
+    int temp_route_split[num_v][num_c];
+    double route_capacity[num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_c + num_v; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    
+    for(int i = 0; i < num_v; i++)
+        route_capacity[i] = 0.0;
+    
+    double best_cost = sol.cost;
+    
+    // SPLIT ROUTE
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol.seq_node[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_capacity[index_route] += Demands[node];
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            
+            temp_route_split[index_route][0] = index_node;
+            
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v) return;
+            }
+        }
+    }
+    
+    int i, j, temp;
+    int route_1, route_2;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int Best_Index_1 = -1;
+    int Best_Index_2 = -1;
+    int Best_R_Idx_1 = -1;
+    int Best_R_Idx_2 = -1;
+    double best_delta_cost = 10000.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        route_1 = comb[ar[i]][0];
+        route_2 = comb[ar[i]][1];
+        int num_node_1 = temp_route_split[route_1][0];
+        int num_node_2 = temp_route_split[route_2][0];
+        
+        if(num_node_1 > 2 && num_node_2 > 2)
+        {
+            // SEARCH
+            for(int it1 = 1; it1 < num_node_1; it1++)
+            {
+                int node_1 = temp_route_split[route_1][it1];
+                int prev_node_1 = temp_route_split[route_1][it1 - 1];
+                if(it1 == 1) prev_node_1 = 0;
+                int next_node_1 = temp_route_split[route_1][it1 + 1];
+                if(next_node_1 >= num_c) next_node_1 = 0;
+                for(int it2 = 1; it2 < num_node_2; it2++)
+                {
+                    int node_2 = temp_route_split[route_2][it2];
+                    int next_node_2 = temp_route_split[route_2][it2 + 1];
+                    if(next_node_2 >= num_c) next_node_2 = 0;
+                    double delta_cost = (Distances[prev_node_1][next_node_1] + Distances[node_2][node_1] + Distances[node_1][next_node_2]) - (Distances[prev_node_1][node_1] + Distances[node_1][next_node_1] + Distances[node_2][next_node_2]);
+                    
+                    if(delta_cost < 0.0 && delta_cost < best_delta_cost && (route_capacity[route_2] + Demands[node_1] <= max_cap) && validate_partial_route(temp_route_split[route_2], it2, node_1, Distances, Best_Stat, Best_Stat_Distances, max_eng, eng_consum, num_c))
+                    {
+                        printf("\nFOUND BETTER: %lf\n", delta_cost);
+                        best_delta_cost = delta_cost;
+                        Best_Index_1 = it1;
+                        Best_Index_2 = it2;
+                        Best_R_Idx_1 = route_1;
+                        Best_R_Idx_2 = route_2;
+                    }
+                }
+            }
+        }
+    }
+    // update route
+    if(Best_Index_1 != -1 && Best_Index_2 != -1)
+    {
+        int val1 = temp_route_split[Best_R_Idx_1][Best_Index_1];
+        
+        int cur_idx = 0;
+        sol.seq_node[cur_idx] = 0;
+        int num_node_1 = temp_route_split[Best_R_Idx_1][0];
+        int num_node_2 = temp_route_split[Best_R_Idx_2][0];
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[Best_R_Idx_1][i1] != val1)
+            {
+                cur_idx++;
+                sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_1][i1];
+            }
+        }
+        for(int i1 = 1; i1 <= Best_Index_2; i1++)
+        {
+            cur_idx++;
+            sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        cur_idx++;
+        sol.seq_node[cur_idx] = val1;
+        for(int i1 = Best_Index_2 + 1; i1 <= num_node_2; i1++)
+        {
+            cur_idx++;
+            sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != Best_R_Idx_1 && i2 != Best_R_Idx_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    cur_idx++;
+                    sol.seq_node[cur_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+bool Util::validate_partial_route20(int *route, int idx_j, int idx_i, int node_j, int node_i, int next_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int numc)
+{
+    int num_node = route[0];
+    int temp[200];
+    temp[0] = 0;
+    int curr_idx = 0;
+    for(int i = 1; i < num_node; i++)
+    {
+        if(i == idx_j)
+        {
+            curr_idx++;
+            temp[curr_idx] = route[i];
+            curr_idx++;
+            temp[curr_idx] = node_i;
+            curr_idx++;
+            temp[curr_idx] = next_i;
+        } else
+        {
+            curr_idx++;
+            temp[curr_idx] = route[i];
+        }
+    }
+    
+    curr_idx = 0;
+    double avail_eng = max_eng;
+    while (curr_idx < num_node + 2)
+    {
+        int current_node = temp[curr_idx];
+        int next_node = temp[curr_idx + 1];
+        if(next_node > numc) next_node = 0;
+        
+        if(current_node != next_node)
+        {
+            //double dist = dist_comsum(Distances[current_node][next_node], eng_consum);
+            double dist = Distances[current_node][next_node];
+            if(avail_eng > dist_comsum(dist, eng_consum))
+                avail_eng -= dist_comsum(dist, eng_consum);
+            else
+            {
+                int best_stat = Best_Stat[current_node][next_node];
+                if(avail_eng > dist_comsum(Distances[best_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_stat][next_node], eng_consum))
+                {
+                    avail_eng = max_eng - dist_comsum(Distances[best_stat][next_node], eng_consum);
+                    if(avail_eng < 0.0) return false;
+                } else
+                {
+                    // try to back track 1 time to find better sol
+                    if(curr_idx == 0) return  false;
+                    else
+                    {
+                        int prev_node = temp[curr_idx - 1];
+                        double prev_avail_eng = avail_eng + dist_comsum(Distances[prev_node][current_node], eng_consum);
+                        int best_prev_stat = Best_Stat[prev_node][current_node];
+                        if(prev_avail_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum))
+                        {
+                            avail_eng = max_eng - dist_comsum(Distances[best_prev_stat][current_node], eng_consum);
+                        } else return false;
+                    }
+                }
+            }
+        }
+        curr_idx++;
+    }
+    return true;
+}
+
+void Util::Interchange20FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int loop, int (*comb)[2])
+{
+    int temp_route_split[num_v][num_c];
+    double route_capacity[num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_c + num_v; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    
+    for(int i = 0; i < num_v; i++)
+        route_capacity[i] = 0.0;
+    
+    // SPLIT ROUTE
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol.seq_node[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_capacity[index_route] += Demands[node];
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            
+            temp_route_split[index_route][0] = index_node;
+            
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v) return;
+            }
+        }
+    }
+    
+    int i, j, temp;
+    int route_1, route_2;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int Best_Index_1 = -1;
+    int Best_Index_2 = -1;
+    int Best_R_Idx_1 = -1;
+    int Best_R_Idx_2 = -1;
+    double best_delta_cost = 10000.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        route_1 = comb[ar[i]][0];
+        route_2 = comb[ar[i]][1];
+        int num_node_1 = temp_route_split[route_1][0];
+        int num_node_2 = temp_route_split[route_2][0];
+        
+        if(num_node_1 > 3 && num_node_2 > 3)
+        {
+            for(int it1 = 1; it1 < num_node_1 - 1; it1++)
+            {
+                int node_1 = temp_route_split[route_1][it1];
+                int prev_node_1 = temp_route_split[route_1][it1 - 1];
+                if(it1 == 1) prev_node_1 = 0;
+                int next_node_1 = temp_route_split[route_1][it1 + 1];
+                int more_node_1 = temp_route_split[route_1][it1 + 1];
+                if(more_node_1 >= num_c) more_node_1 = 0;
+                for(int it2 = 1; it2 < num_node_2; it2++)
+                {
+                    int node_2 = temp_route_split[route_2][it2];
+                    int next_node_2 = temp_route_split[route_2][it2 + 1];
+                    if(next_node_2 >= num_c) next_node_2 = 0;
+                    
+                    double delta_cost = (Distances[prev_node_1][more_node_1] + Distances[node_2][node_1] + Distances[node_1][next_node_1] + Distances[next_node_1][next_node_2]) - (Distances[prev_node_1][node_1] + Distances[node_1][next_node_1] + Distances[next_node_1][more_node_1] + Distances[node_2][next_node_2]);
+                    
+                    if(delta_cost < 0.0 && delta_cost < best_delta_cost && (route_capacity[route_2] + Demands[node_1] + Demands[next_node_1] < max_cap) && validate_partial_route20(temp_route_split[route_2], it2, it1, node_2, node_1, next_node_1, Distances, Best_Stat, Best_Stat_Distances, max_eng, eng_consum, num_c))
+                    {
+                        
+                        best_delta_cost = delta_cost;
+                        Best_Index_1 = it1;
+                        Best_Index_2 = it2;
+                        Best_R_Idx_1 = route_1;
+                        Best_R_Idx_2 = route_2;
+                    }
+                }
+            }
+        }
+    }
+    
+    // update route
+    if(Best_Index_1 != -1 && Best_Index_2 != -1)
+    {
+        int val1 = temp_route_split[Best_R_Idx_1][Best_Index_1];
+        int next_val = temp_route_split[Best_R_Idx_1][Best_Index_1 + 1];
+        int cur_idx = 0;
+        sol.seq_node[cur_idx] = 0;
+        int num_node_1 = temp_route_split[Best_R_Idx_1][0];
+        int num_node_2 = temp_route_split[Best_R_Idx_2][0];
+        
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[Best_R_Idx_1][i1] != val1 && temp_route_split[Best_R_Idx_1][i1] != next_val)
+            {
+                cur_idx++;
+                sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_1][i1];
+            }
+        }
+        
+        for(int i1 = 1; i1 <= Best_Index_2; i1++)
+        {
+            cur_idx++;
+            sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        cur_idx++;
+        sol.seq_node[cur_idx] = val1;
+        cur_idx++;
+        sol.seq_node[cur_idx] = next_val;
+        
+        for(int i1 = Best_Index_2 + 1; i1 < num_node_2; i1++)
+        {
+            cur_idx++;
+            sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != Best_R_Idx_1 && i2 != Best_R_Idx_2)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    cur_idx++;
+                    sol.seq_node[cur_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+bool Util::validate_partial_route11(int *route, int idx_j, int idx_i, int node_j, int node_i, int next_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int numc)
+{
+    int num_node = route[0];
+    int temp[200];
+    temp[0] = 0;
+    int curr_idx = 0;
+    for(int i = 1; i < num_node; i++)
+    {
+        if(i == idx_j)
+        {
+            curr_idx++;
+            temp[curr_idx] = node_i;
+        } else
+        {
+            curr_idx++;
+            temp[curr_idx] = route[i];
+        }
+    }
+    
+    curr_idx = 0;
+    double avail_eng = max_eng;
+    
+    while (curr_idx < num_node) {
+        int current_node = temp[curr_idx];
+        int next_node = temp[curr_idx + 1];
+        if(next_node > numc) next_node = 0;
+        
+        if(current_node != next_node)
+        {
+            double dist = Distances[current_node][next_node];
+            if(avail_eng > dist_comsum(dist, eng_consum))
+                avail_eng -= dist_comsum(dist, eng_consum);
+            else
+            {
+                int best_stat = Best_Stat[current_node][next_node];
+                if(avail_eng > dist_comsum(Distances[best_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_stat][next_node], eng_consum))
+                {
+                    avail_eng = max_eng - dist_comsum(Distances[best_stat][next_node], eng_consum);
+                    if(avail_eng < 0.0) return false;
+                } else
+                {
+                    // try to back track 1 time to find better sol
+                    if(curr_idx == 0) return false;
+                    else
+                    {
+                        int prev_node = temp[curr_idx - 1];
+                        double prev_avail_eng = avail_eng + dist_comsum(Distances[prev_node][current_node], eng_consum);
+                        
+                        int best_prev_stat = Best_Stat[prev_node][current_node];
+                        if(prev_avail_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum) && max_eng > dist_comsum(Distances[best_prev_stat][current_node], eng_consum))
+                        {
+                            avail_eng = max_eng - dist_comsum(Distances[best_prev_stat][current_node], eng_consum);
+                        } else return false;
+                    }
+                }
+            }
+        }
+        curr_idx++;
+    }
+    return true;
+}
+
+void Util::Interchange11FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int loop, int (*comb)[2])
+{
+    int temp_route_split[num_v][num_c];
+    double route_capacity[num_v];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_c + num_v; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    for(int i = 0; i < num_v; i++)
+        route_capacity[i] = 0.0;
+    
+    double best_cost = sol.cost;
+    
+    // SPLIT ROUTE
+    int index_route = 0;
+    int index_node = 0;
+    
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol.seq_node[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_capacity[index_route] += Demands[node];
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            
+            temp_route_split[index_route][0] = index_node;
+            
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v) return;
+            }
+        }
+    }
+    
+    int i, j, temp;
+    int route_1, route_2;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int Best_Index_1 = -1;
+    int Best_Index_2 = -1;
+    int Best_R_Idx_1 = -1;
+    int Best_R_Idx_2 = -1;
+    double best_delta_cost = 10000.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        route_1 = comb[ar[i]][0];
+        route_2 = comb[ar[i]][1];
+        int num_node_1 = temp_route_split[route_1][0];
+        int num_node_2 = temp_route_split[route_2][0];
+        
+        if(num_node_1 > 2 && num_node_2 > 2)
+        {
+            // SEARCH
+            for(int it1 = 1; it1 < num_node_1 ; it1++)
+            {
+                int node_1 = temp_route_split[route_1][it1];
+                int prev_1 = temp_route_split[route_1][it1 - 1];
+                if(it1 == 1) prev_1 = 0;
+                int next_1 = temp_route_split[route_1][it1 + 1];
+                if(next_1 >= num_c) next_1 = 0;
+                for(int it2 = 1; it2 < num_node_2; it2++)
+                {
+                    int node_2 = temp_route_split[route_2][it2];
+                    int next_2 = temp_route_split[route_2][it2 + 1];
+                    if(next_2 >= num_c) next_2 = 0;
+                    int prev_2 = temp_route_split[route_2][it2 - 1];
+                    if(it2 == 1) prev_2 = 0;
+                    
+                    double delta_cost = (Distances[prev_2][node_1] + Distances[node_1][next_2] + Distances[prev_1][node_2] + Distances[node_2][next_1]) - (Distances[prev_1][node_1] + Distances[node_1][next_1] + Distances[prev_2][node_2] + Distances[node_2][next_2]);
+                    if(delta_cost < 0.0 && delta_cost < best_delta_cost && (route_capacity[route_1] + Demands[node_2] < max_cap) && (route_capacity[route_2] + Demands[node_1]< max_cap) && validate_partial_route11(temp_route_split[route_2], it2, it1, node_2, node_1, next_1, Distances, Best_Stat, Best_Stat_Distances, max_eng, eng_consum, num_c))
+                    {
+                       printf("\nFOUND BETTER: %lf\n", delta_cost);
+                        best_delta_cost = delta_cost;
+                        Best_Index_1 = it1;
+                        Best_Index_2 = it2;
+                        Best_R_Idx_1 = route_1;
+                        Best_R_Idx_2 = route_2;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Util::Interchange21FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int loop, int (*comb)[2])
+{
+    int temp_route_split[num_v][num_c];
+    double route_capacity[200];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_c + num_v; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    
+    for(int i = 0; i < num_v; i++)
+        route_capacity[i] = 0.0;
+    
+    double best_cost = sol.cost;
+    
+    // SPLIT ROUTE
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol.seq_node[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_capacity[index_route] += Demands[node];
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            
+            temp_route_split[index_route][0] = index_node;
+            
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v) return;
+            }
+        }
+    }
+    
+    int i, j, temp;
+    int route_1, route_2;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int Best_Index_1 = -1;
+    int Best_Index_2 = -1;
+    int Best_R_Idx_1 = -1;
+    int Best_R_Idx_2 = -1;
+    double best_delta_cost = 10000.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        route_1 = comb[ar[i]][0];
+        route_2 = comb[ar[i]][1];
+        int num_node_1 = temp_route_split[route_1][0];
+        int num_node_2 = temp_route_split[route_2][0];
+        
+        if(num_node_1 > 3 && num_node_2 > 3)
+        {
+            // SEARCH
+            for(int it1 = 1; it1 < num_node_1 - 2; it1++)
+            {
+                int node_1 = temp_route_split[route_1][it1];
+                int prev_node_1 = temp_route_split[route_1][it1 - 1];
+                if(it1 == 1) prev_node_1 = 0;
+                int next_node_1 = temp_route_split[route_1][it1 + 1];
+                int more_node_1 = temp_route_split[route_1][it1 + 2];
+                if(more_node_1 >= num_c) more_node_1 = 0;
+                
+                for(int it2 = 1; it2 < num_node_2; it2++)
+                {
+                    int node_2 = temp_route_split[route_2][it2];
+                    int next_node_2 = temp_route_split[route_2][it2 + 1];
+                    if(next_node_2 >= num_c) next_node_2 = 0;
+                    int prev_node_2 = temp_route_split[route_2][it2 - 1];
+                    if(it2 == 1) prev_node_2 = 0;
+                    
+                    double detal_cost = (Distances[prev_node_2][node_1] + Distances[node_1][next_node_1] + Distances[next_node_1][next_node_2] + Distances[prev_node_1][node_2] + Distances[node_2][next_node_1]) - (Distances[prev_node_1][node_1] + Distances[node_1][next_node_1] + Distances[next_node_1][more_node_1] + Distances[prev_node_2][node_2] + Distances[node_1][next_node_2]);
+                    
+                    if(detal_cost < -5.0 && detal_cost < best_delta_cost && (route_capacity[route_1] - Demands[node_1] - Demands[next_node_1] + Demands[node_2] < max_cap) && (route_capacity[route_2] - Demands[node_2] + Demands[node_1] + Demands[next_node_1] < max_cap))
+                    {
+                        best_delta_cost = detal_cost;
+                        Best_Index_1 = it1;
+                        Best_Index_2 = it2;
+                        Best_R_Idx_1 = route_1;
+                        Best_R_Idx_2 = route_2;
+                    }
+                }
+            }
+        }
+    }
+    
+    // update route
+    if(Best_Index_1 != -1 && Best_Index_2 != 2)
+    {
+         int curr_idx = 0;
+        sol.seq_node[0] = 0;
+        int num_node_1 = temp_route_split[Best_R_Idx_1][0];
+        int num_node_2 = temp_route_split[Best_Index_2][0];
+        
+        int nodeR1 = temp_route_split[Best_R_Idx_1][Best_Index_1];
+        int next_node_R1 = temp_route_split[Best_R_Idx_1][Best_Index_1 + 1];
+        int nodeR2 = temp_route_split[Best_R_Idx_2][Best_Index_2];
+        int next_node_R2 = temp_route_split[Best_R_Idx_2][Best_Index_2 + 1];
+        
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[Best_R_Idx_1][i1] == nodeR1)
+            {
+                curr_idx++;
+                sol.seq_node[curr_idx] = nodeR2;
+            } else if(temp_route_split[Best_R_Idx_1][i1] == next_node_R1) continue;
+            else
+            {
+                curr_idx++;
+                sol.seq_node[curr_idx] = temp_route_split[Best_R_Idx_1][i1];
+            }
+        }
+        
+        for(int i1 = 1; i1 < Best_Index_2; i1++)
+        {
+            curr_idx++;
+            sol.seq_node[curr_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        curr_idx++;
+        sol.seq_node[curr_idx] = nodeR1;
+        curr_idx++;
+        sol.seq_node[curr_idx] = next_node_R1;
+        
+        for(int i1 = Best_Index_2 + 1; i1 <- num_node_2; i1++)
+        {
+            curr_idx++;
+            sol.seq_node[curr_idx] = temp_route_split[Best_R_Idx_2][i1];
+        }
+        
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != Best_R_Idx_2 && i2 != Best_R_Idx_1)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    curr_idx++;
+                    sol.seq_node[curr_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+void Util::Interchange22FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int loop, int (*comb)[2])
+{
+    int temp_route_split[num_v][num_c];
+    double route_capacity[100];
+    for(int i = 0; i < num_v; i++)
+    {
+        for(int j = 0; j < num_c + num_v; j++)
+        {
+            temp_route_split[i][j] = num_c + num_v + 1;
+        }
+    }
+    
+    for(int i = 0; i < num_v; i++)
+        route_capacity[i] = 0.0;
+    
+    // SPLIT ROUTE
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol.seq_node[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_capacity[index_route] += Demands[node];
+        } else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            
+            temp_route_split[index_route][0] = index_node;
+            
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v) return;
+            }
+        }
+    }
+    
+    int i, j, temp;
+    int route_1, route_2;
+    int ar[1000];
+    for(i = 0; i < loop; i++)
+        ar[i] = i;
+    
+    for(i = 0; i < loop - 1; i++)
+    {
+        j = Rand(i, loop - 1);
+        temp = ar[i];
+        ar[i] = ar[j];
+        ar[j] = temp;
+    }
+    
+    int Best_Index_1 = -1;
+    int Best_Index_2 = -1;
+    int Best_R_Idx_1 = -1;
+    int Best_R_Idx_2 = -1;
+    double best_delta_cost = 10000.0;
+    
+    for(i = 0; i < loop; i++)
+    {
+        route_1 = comb[ar[i]][0];
+        route_2 = comb[ar[i]][1];
+        int num_node_1 = temp_route_split[route_1][0];
+        int num_node_2 = temp_route_split[route_2][0];
+        
+        if(num_node_1 > 3 && num_node_2 > 3)
+        {
+            for(int it1 = 1; it1 < num_node_1 - 2; it1++)
+            {
+                int node_1 = temp_route_split[route_1][it1];
+                int prev_1 = temp_route_split[route_1][it1 - 1];
+                if(it1 == 1) prev_1 = 0;
+                int next_1 = temp_route_split[route_1][it1 + 1];
+                int more_1 = temp_route_split[route_1][it1 + 2];
+                if(more_1 >= num_c) more_1 = 0;
+                
+                for(int it2 = 1; it2 < num_node_2 - 2; it2++)
+                {
+                    int node_2 = temp_route_split[route_2][it2];
+                    int prev_2 = temp_route_split[route_2][it2 - 1];
+                    if(it2 == 1) prev_2 = 0;
+                    int next_2 = temp_route_split[route_2][it2 + 1];
+                    int more_2 = temp_route_split[route_2][it2 + 2];
+                    if(more_2 >= num_c) more_2 = 0;
+                    
+                    double delta_cost = (Distances[prev_1][node_2] + Distances[node_2][next_2] + Distances[next_2][more_2] + Distances[prev_2][node_1] + Distances[node_1][next_1] + Distances[next_1][next_2]) - (Distances[prev_1][node_1] + Distances[node_1][next_1] + Distances[next_1][more_1] + Distances[prev_2][node_2] + Distances[node_2][next_2] + Distances[next_2][more_2]);
+                    
+                    if(delta_cost < best_delta_cost && delta_cost < 0.0 && (route_capacity[route_1] - Demands[node_1] - Demands[next_1] + Demands[node_2] + Demands[next_2] < max_cap) && (route_capacity[route_2] - Demands[node_2] - Demands[next_2] + Demands[node_1] + Demands[next_1] < max_cap))
+                    {
+                        printf("\nFOUND BETTER: %lf\n", delta_cost);
+                        best_delta_cost = delta_cost;
+                        Best_Index_1 = it1;
+                        Best_Index_2 = it2;
+                        Best_R_Idx_1 = route_1;
+                        Best_R_Idx_2 = route_2;
+                    }
+                }
+            }
+        }
+    }
+    
+    // update route
+    if(Best_Index_1 != -1 && Best_Index_2 != -1)
+    {
+        int cur_idx = 0;
+        sol.seq_node[cur_idx] = 0;
+        int num_node_1 = temp_route_split[Best_R_Idx_1][0];
+        int num_node_2 = temp_route_split[Best_R_Idx_2][0];
+        
+        int nodeR1 = temp_route_split[Best_R_Idx_1][Best_Index_1];
+        int nodeR2 = temp_route_split[Best_R_Idx_2][Best_Index_2];
+        int nextR1 = temp_route_split[Best_R_Idx_1][Best_Index_1 + 1];
+        int nextR2 = temp_route_split[Best_R_Idx_2][Best_Index_2 + 1];
+        
+        for(int i1 = 1; i1 <= num_node_1; i1++)
+        {
+            if(temp_route_split[Best_R_Idx_1][i1] == nodeR1)
+            {
+                cur_idx++;
+                sol.seq_node[cur_idx] = nodeR2;
+            } else if(temp_route_split[Best_R_Idx_1][i1] == nextR1) {
+                cur_idx++;
+                sol.seq_node[cur_idx] = nextR2;
+            } else {
+                cur_idx++;
+                sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_1][i1];
+            }
+        }
+        
+        for(int i1 = 1;  i1 <= num_node_2; i1++)
+        {
+            if(temp_route_split[Best_R_Idx_2][i1] == nodeR2)
+            {
+                cur_idx++;
+                sol.seq_node[cur_idx] = nodeR1;
+            } else if(temp_route_split[Best_R_Idx_2][i1] == nextR2){
+                cur_idx++;
+                sol.seq_node[cur_idx] = nextR1;
+            } else {
+                cur_idx++;
+                sol.seq_node[cur_idx] = temp_route_split[Best_R_Idx_2][i1];
+            }
+        }
+        
+        for(int i2 = 0; i2 <= index_route; i2++)
+        {
+            if(i2 != Best_R_Idx_1 && i2 != Best_R_Idx_1)
+            {
+                int n_node = temp_route_split[i2][0];
+                for(int i1 = 1; i1 <= n_node; i1++)
+                {
+                    cur_idx++;
+                    sol.seq_node[cur_idx] = temp_route_split[i2][i1];
+                }
+            }
+        }
+    }
+}
+
+
+// Tabu search all sols
+//Move Util::CallEvaluate_All(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double **Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int IT)
+//{
+//    FOUND_NEW_BEST = false;
+//    Move best_move;
+//    best_move.cus_1 = -1;
+//    best_move.cus_2 = -1;
+//    best_move.varFitness = 1000000.0;
+//    for(int i = 1; i < num_c; i++)
+//    {
+//        int idx_i = find_index(seq, num_c + num_v, i);
+//        for(int k = 0; k < 10; k++)
+//        {
+//            Move move;
+//            int j = List_Nearest_Cus[i][k];
+//            int idx_j = find_index(seq, num_c + num_v, j);
+//            if(idx_i == idx_j + 1) continue;
+//
+//            int prev_node_i = seq[idx_i - 1];
+//            int next_node_i = seq[idx_i + 1];
+//            int prev_node_j = seq[idx_j - 1];
+//            int next_node_j = seq[idx_j + 1];
+//
+//            if(prev_node_i >= num_c) prev_node_i = 0;
+//            if(next_node_i >= num_c) next_node_i = 0;
+//            if(prev_node_j >= num_c) prev_node_j = 0;
+//            if(next_node_j >= num_c) next_node_j = 0;
+//
+//            move.varCost = Distances[prev_node_i][next_node_i] + Distances[j][i] + Distances[i][next_node_j] - (Distances[prev_node_i][i] + Distances[i][next_node_i] + Distances[j][next_node_j]);
+//            double vioCap = 0.0;
+//            double sum_cap_j = 0.0;
+//            int before_j = idx_j - 1;
+//            int after_j = idx_j + 1;
+//            bool is_on_the_route = false;
+//            if(before_j >= 0)
+//            {
+//                while (seq[before_j] < num_c && seq[before_j] != 0 && before_j >= 0) {
+//                    if(idx_i == before_j) is_on_the_route = true;
+//                    int node = seq[before_j];
+//                    sum_cap_j += Demands[node];
+//                    before_j--;
+//                }
+//            } else before_j = 0;
+//
+//            while (seq[after_j] < num_c && seq[after_j] != 0) {
+//                if(after_j == idx_i) is_on_the_route = true;
+//                sum_cap_j += Demands[seq[after_j]];
+//                after_j++;
+//            }
+//
+//            sum_cap_j += Demands[j];
+//            if(is_on_the_route) {
+////                if(max_cap - sum_cap_j > 0) vioCap = 0.0;
+////                else vioCap = 0.0;
+//                vioCap = 0.0;
+//            } else
+//            {
+//                // find over cap of route i
+//                double sum_cap_i = Demands[i];
+//                int before_i = idx_i - 1;
+//                int after_i = idx_j + 1;
+//                if(before_i >= 0)
+//                {
+//                    while (seq[before_i] < num_c && seq[before_i] != 0 && before_i >= 0) {
+//                        int node = seq[before_i];
+//                        sum_cap_i += Demands[node];
+//                        before_i--;
+//                    }
+//                } else before_i = 0;
+//
+//                while (seq[after_i] < num_c && seq[after_i] != 0) {
+//                    sum_cap_i += Demands[seq[after_i]];
+//                    after_i++;
+//                }
+//
+//                double over_cap_j = sum_cap_j - max_cap;
+//                if(over_cap_j < 0.0) over_cap_j = 0.0;
+//
+//                double over_cap_i = sum_cap_i - max_cap;
+//                if(over_cap_i < 0.0) over_cap_i = 0.0;
+//
+//                double over_cap_i_new = (sum_cap_i - Demands[i]) - max_cap;
+//                if(over_cap_i_new < 0.0) over_cap_i_new = 0.0;
+//                double over_cap_j_new = (sum_cap_j + Demands[i]) - max_cap;
+//                if(over_cap_j_new < 0.0) over_cap_j_new = 0.0;
+//
+//                vioCap = (over_cap_i_new + over_cap_j_new) - (over_cap_i + over_cap_j);
+//            }
+//
+//            move.varVioCap = vioCap;
+//            move.varFitness = move.varCost + move.varVioCap * ALPHA;
+//
+//
+//        }
+//    }
+//}
+void Util::Tabu_search_all(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
+{
+    // reset tabu counter
+    for(int i = 0; i < num_c; i++)
+    {
+        for(int j = 0; j < num_c; j++)
+        {
+            tabu[i][j] = -1;
+        }
+    }
+    
+    // init best tabu
+    for(int i = 0; i < num_c + num_v; i++)
+    {
+        Best_Tabu_Search[i] = seq[i];
+    }
+    double finess_Zt = init_fitness;
+    FIT_BEST = init_fitness;
+    for(int it = 0; it < 100; it++)
+    {
+        
     }
 }

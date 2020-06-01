@@ -24,37 +24,56 @@ public:
     double compute_alpha(double H, double avg_q);
     bool check_selected_customer(int *seq_customer, int begin, int end, int value);
     void Permutation_Order_1(Solution sol1, Solution sol2, int *child_1, int num_node);
+    void Permutation_Order_1_v1(Solution sol1, Solution sol2, int *child_1, int num_node);
     void Cycle(Solution sol1, Solution sol2, int * child, int num_node);
     double compute_cost_sol(int *sol_seq, double **Distances, int num_c, int num_v);
     bool choose_better_sol(int *sol_seq1, int *sol_seq2, double **Distances, int num_c, int num_v);
     
     int Rand(int i, int j);
     
-    // Education phase
+    // EDUCATION PHASE
     void set_init_best(int *sol, int num_node);
     bool find_through_station(int *sol, bool *through_station, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **best_stat, double **best_stat_distances);
     double dist_comsum(double distance, double eng_consum);
     
-    // Operators
+    // OPERATOR
     void two_exchange_education(int *sol, double ** Distances, int num_c, int num_v);
     void or_exhcange(int *sol, double **Distances, int num_c, int num_v);
     void cross_exchange(int *sol, double ** Distances, int num_c, int num_v);
     
     bool Education(int *seq_node, bool * though_station, double ** Distances, int num_c, int num_v, double max_eng, double eng_consum, int **best_stat, double **best_stat_distances);
     
-    // save sol to pool
+    // SAVE SOL TO POOL
     void save_sol_to_pool(int *seq, int * pool_seq, int num_node);
     
-    //optimize local search for best sol
-    //void update_Best_Search(int **plitted_route, int R1, int R2, int idx1, int idx2, int num_c, int num_v);
+    
+    
+    // LOCAL SEARCH
     void Interchange10APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void Interchange20APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void Interchange11APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void Interchange21APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void Interchange22APR(int *seq, double **Distances, int num_c, int num_v, int comb[][2], int loop);
     void local_search(int *seq, double **Distances, int num_c, int num_v, int num);
+    
+    // LOCAL SEARCH FIX
+    bool validate_partial_route(int *route, int idx_j, int node_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int numc);
+    bool validate_partial_route20(int *route, int idx_j, int idx_i, int node_j, int node_i, int next_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int numc);
+    bool validate_partial_route11(int *route, int idx_j, int idx_i, int node_j, int node_i, int next_i, double **Distances, int **Best_Stat, double **Best_Stat_Distances, double max_eng, double eng_consum, int numc);
+    void local_search_FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
+    void Interchange10FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int loop, int comb[][2]);
+    void Interchange20FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int loop, int comb[][2]);
+    void Interchange11FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int loop, int comb[][2]);
+    void Interchange21FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int loop, int comb[][2]);
+    void Interchange22FIX(Solution sol, double **Distances, int num_c, int num_v, double *Demands, double max_cap, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int loop, int comb[][2]);
+    
+    
+    // TABU SEARCH
     void Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
+    void Tabu_search_all(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
     Move CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
-    bool validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances);
+    Move CallEvaluate_All(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
+    bool validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int idx_j, int idx_i, int node_j, int node_i);
+    
 };
 #endif /* Util_hpp */

@@ -19,5 +19,6 @@ public:
     double varFitness;
     bool feasible = false;
     bool tabu = false;
+    int index;
 };
 #endif /* Move_hpp */
