@@ -1596,7 +1596,6 @@ int find_index(int *seq, int num_node, int cus)
 }
 
 bool Util::validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int idx_j, int idx_i, int node_j, int node_i){
-    bool is_feasible = true;
     int current_idx = begin;
     double available_eng = max_eng;
     bool is_begin = true;
@@ -1689,8 +1688,9 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
             if(next_node_j >= num_c) next_node_j = 0;
             
             move.varCost = Distances[prev_node_i][next_node_i] + Distances[j][i] + Distances[i][next_node_j] - (Distances[prev_node_i][i] + Distances[i][next_node_i] + Distances[j][next_node_j]);
+            //printf("\nVar_cost: %lf", move.varCost);
             //move.varVioCap =
-            double sum_cap_j = 0.0;
+            double sum_cap_j = Demands[j];
             int before_j = idx_j - 1;
             int after_j = idx_j + 1;
             bool is_on_the_route = false;
@@ -1711,7 +1711,6 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                 after_j++;
             }
             
-            sum_cap_j += (Demands[j] + Demands[i]);
             if(is_on_the_route) {
                 move.varVioCap = 0.0;
             } else
@@ -1719,7 +1718,7 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                 // find over cap of route i
                 double sum_cap_i = Demands[i];
                 int before_i = idx_i - 1;
-                int after_i = idx_j + 1;
+                int after_i = idx_i + 1;
                 if(before_i >= 0)
                 {
                     while (seq[before_i] < num_c && seq[before_i] != 0 && before_i >= 0)
@@ -1750,8 +1749,6 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                 move.varVioCap = (over_cap_i_new + over_cap_j_new) - (over_cap_i + over_cap_j);
             }
             
-            //printf("\nVioCap: %lf\n", move.varVioCap);
-            
             move.varFitness = move.varCost + move.varVioCap * ALPHA;
             if(before_j == -1) before_j = 0;
             // validate through stat
@@ -1780,33 +1777,32 @@ Move Util::CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int *
                 {
                     if(FOUND){
                         if(move.varFitness < best_move.varFitness){
-                            printf("\nfound_new_better\n");
-                            best_move = move;
                             best_move.cus_1 = i;
                             best_move.cus_2 = j;
                             best_move.varFitness = move.varFitness;
+                            best_move.varVioCap = move.varVioCap;
+                            best_move.varCost = move.varCost;
                         }
                     }
                 } else {
                     if(FOUND) {
-                        printf("\nFOUNd BEST\n");
                         FOUND_NEW_BEST = true;
-                        best_move = move;
                         best_move.cus_1 = i;
                         best_move.cus_2 = j;
                         best_move.varFitness = move.varFitness;
+                        best_move.varVioCap = move.varVioCap;
+                        best_move.varCost = move.varCost;
                     } else if(move.varFitness < best_move.varFitness) {
-                        printf("\nFOUND BETTER\n");
-                        best_move = move;
                         best_move.cus_1 = i;
                         best_move.cus_2 = j;
                         best_move.varFitness = move.varFitness;
+                        best_move.varVioCap = move.varVioCap;
+                        best_move.varCost = move.varCost;
                     }
                 }
             }
         }
     }
-    //printf("\nEND SEARCH: %d\n", IT);
     return best_move;
 }
 
@@ -1826,21 +1822,11 @@ void update_seq(int *origin, int i, int j, int num_node){
             temp[index] = origin[k];
         }
     }
-    // copy back
-//    printf("\nbefore assign from temp\n");
-//    for(int i = 0; i < num_node; i++)
-//    {
-//        printf("%d ->", origin[i]);
-//    }
+    
     for(int k = 0; k < num_node; k++)
     {
         origin[k] = temp[k];
     }
-//    printf("\nafter assign from temp\n");
-//    for(int i = 0 ; i < num_node; i++)
-//    {
-//        printf("%d ->", origin[i]);
-//    }
 }
 
 void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances)
@@ -1861,8 +1847,7 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
     }
     double finess_Zt = init_fitness;
     FIT_BEST = init_fitness;
-    //printf("\n+++++++++++++++++++++ BEGIN TABU SEARCH +++++++++++++++++++ FITNESS: %lf\n", finess_Zt);
-    for(int it = 0; it < 16000; it++)
+    for(int it = 0; it < 100; it++)
     {
         Move best_move = CallEvaluate(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
         if(best_move.cus_1 != -1)
@@ -1871,12 +1856,13 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
             int j = best_move.cus_2;
             tabu[i][j] = it + tabu_num;
             tabu[j][i]= it + tabu_num;
+            
+            
+            
             finess_Zt = finess_Zt + best_move.varFitness;
             // create new route
             update_seq(seq, i, j, num_c + num_v);
             if(FOUND_NEW_BEST) {
-                //printf("\nmove_data: finess: %lf - varFitness: %lf, cus: %d - %d", finess_Zt, best_move.varFitness, i, j);
-//                update_seq(Best_Tabu_Search, i, j, num_c + num_v);
                 for(int s = 0; s < num_c + num_v; s++)
                 {
                     Best_Tabu_Search[s] = seq[s];
@@ -2872,126 +2858,5 @@ void Util::Interchange22FIX(Solution sol, double **Distances, int num_c, int num
                 }
             }
         }
-    }
-}
-
-
-// Tabu search all sols
-//Move Util::CallEvaluate_All(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double **Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int IT)
-//{
-//    FOUND_NEW_BEST = false;
-//    Move best_move;
-//    best_move.cus_1 = -1;
-//    best_move.cus_2 = -1;
-//    best_move.varFitness = 1000000.0;
-//    for(int i = 1; i < num_c; i++)
-//    {
-//        int idx_i = find_index(seq, num_c + num_v, i);
-//        for(int k = 0; k < 10; k++)
-//        {
-//            Move move;
-//            int j = List_Nearest_Cus[i][k];
-//            int idx_j = find_index(seq, num_c + num_v, j);
-//            if(idx_i == idx_j + 1) continue;
-//
-//            int prev_node_i = seq[idx_i - 1];
-//            int next_node_i = seq[idx_i + 1];
-//            int prev_node_j = seq[idx_j - 1];
-//            int next_node_j = seq[idx_j + 1];
-//
-//            if(prev_node_i >= num_c) prev_node_i = 0;
-//            if(next_node_i >= num_c) next_node_i = 0;
-//            if(prev_node_j >= num_c) prev_node_j = 0;
-//            if(next_node_j >= num_c) next_node_j = 0;
-//
-//            move.varCost = Distances[prev_node_i][next_node_i] + Distances[j][i] + Distances[i][next_node_j] - (Distances[prev_node_i][i] + Distances[i][next_node_i] + Distances[j][next_node_j]);
-//            double vioCap = 0.0;
-//            double sum_cap_j = 0.0;
-//            int before_j = idx_j - 1;
-//            int after_j = idx_j + 1;
-//            bool is_on_the_route = false;
-//            if(before_j >= 0)
-//            {
-//                while (seq[before_j] < num_c && seq[before_j] != 0 && before_j >= 0) {
-//                    if(idx_i == before_j) is_on_the_route = true;
-//                    int node = seq[before_j];
-//                    sum_cap_j += Demands[node];
-//                    before_j--;
-//                }
-//            } else before_j = 0;
-//
-//            while (seq[after_j] < num_c && seq[after_j] != 0) {
-//                if(after_j == idx_i) is_on_the_route = true;
-//                sum_cap_j += Demands[seq[after_j]];
-//                after_j++;
-//            }
-//
-//            sum_cap_j += Demands[j];
-//            if(is_on_the_route) {
-////                if(max_cap - sum_cap_j > 0) vioCap = 0.0;
-////                else vioCap = 0.0;
-//                vioCap = 0.0;
-//            } else
-//            {
-//                // find over cap of route i
-//                double sum_cap_i = Demands[i];
-//                int before_i = idx_i - 1;
-//                int after_i = idx_j + 1;
-//                if(before_i >= 0)
-//                {
-//                    while (seq[before_i] < num_c && seq[before_i] != 0 && before_i >= 0) {
-//                        int node = seq[before_i];
-//                        sum_cap_i += Demands[node];
-//                        before_i--;
-//                    }
-//                } else before_i = 0;
-//
-//                while (seq[after_i] < num_c && seq[after_i] != 0) {
-//                    sum_cap_i += Demands[seq[after_i]];
-//                    after_i++;
-//                }
-//
-//                double over_cap_j = sum_cap_j - max_cap;
-//                if(over_cap_j < 0.0) over_cap_j = 0.0;
-//
-//                double over_cap_i = sum_cap_i - max_cap;
-//                if(over_cap_i < 0.0) over_cap_i = 0.0;
-//
-//                double over_cap_i_new = (sum_cap_i - Demands[i]) - max_cap;
-//                if(over_cap_i_new < 0.0) over_cap_i_new = 0.0;
-//                double over_cap_j_new = (sum_cap_j + Demands[i]) - max_cap;
-//                if(over_cap_j_new < 0.0) over_cap_j_new = 0.0;
-//
-//                vioCap = (over_cap_i_new + over_cap_j_new) - (over_cap_i + over_cap_j);
-//            }
-//
-//            move.varVioCap = vioCap;
-//            move.varFitness = move.varCost + move.varVioCap * ALPHA;
-//
-//
-//        }
-//    }
-//}
-void Util::Tabu_search_all(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
-{
-    // reset tabu counter
-    for(int i = 0; i < num_c; i++)
-    {
-        for(int j = 0; j < num_c; j++)
-        {
-            tabu[i][j] = -1;
-        }
-    }
-    
-    // init best tabu
-    for(int i = 0; i < num_c + num_v; i++)
-    {
-        Best_Tabu_Search[i] = seq[i];
-    }
-    double finess_Zt = init_fitness;
-    FIT_BEST = init_fitness;
-    for(int it = 0; it < 100; it++)
-    {
-        
     }
 }
