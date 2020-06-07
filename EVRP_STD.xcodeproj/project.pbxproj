@@ -64,7 +64,8 @@
 		0427E0F02488F38100A8C19E /* GA_Tabu_1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_1.txt; sourceTree = "<group>"; };
 		0427E0F22489179300A8C19E /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n23-k3.evrp"; sourceTree = "<group>"; };
 		0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_search.txt; sourceTree = "<group>"; };
-		0427E0F4248CEA0200A8C19E /* GA_Local_Search.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Local_Search.txt; sourceTree = "<group>"; };
+		0427E0F5248CECFE00A8C19E /* Tabu_optimal.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tabu_optimal.txt; sourceTree = "<group>"; };
+		0427E0F6248CED1400A8C19E /* Local_optimal.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Local_optimal.txt; sourceTree = "<group>"; };
 		04505471246EEB3F001C02B0 /* Util.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
 		04505472246EEB3F001C02B0 /* Util.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
 		045C0F04246D579C00CFBBEA /* EVRP_STD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EVRP_STD; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,7 +119,8 @@
 				0416BD902485571800A3985D /* tabu_search_En23_k3.txt */,
 				0427E0F02488F38100A8C19E /* GA_Tabu_1.txt */,
 				0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */,
-				0427E0F4248CEA0200A8C19E /* GA_Local_Search.txt */,
+				0427E0F5248CECFE00A8C19E /* Tabu_optimal.txt */,
+				0427E0F6248CED1400A8C19E /* Local_optimal.txt */,
 			);
 			path = Result;
 			sourceTree = "<group>";
