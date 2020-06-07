@@ -70,10 +70,17 @@ public:
     
     // TABU SEARCH
     void Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
-    void Tabu_search_all(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
     Move CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
-    Move CallEvaluate_All(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
     bool validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int idx_j, int idx_i, int node_j, int node_i);
     
+    // OPTIMAL
+    void Two_Exchange(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
+    bool validate_two_exchange(int *seq, int begin, int end, int i, int j, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int num_c, int num_v);
+    
+    void Or_Exchange(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
+    
+    bool validate_or_exchange(int *seq, int i, int j, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int num_c, int num_v);
+    
+    void Cross_Exchange(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
 };
 #endif /* Util_hpp */

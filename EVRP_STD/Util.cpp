@@ -349,7 +349,11 @@ void Util::two_exchange_education(int *sol, double **Distances, int num_c, int n
             {
                 int i_1 = i + 1;
                 int j_1 = j + 1;
-                double route_cost = init_cost + ((Distances[i][j] + Distances[i_1][j_1]) - (Distances[parent[i]][parent[i_1]] + Distances[parent[j]][parent[j_1]]));
+                int node_i = parent[i];
+                int node_i_1 = parent[i_1];
+                int node_j = parent[j];
+                int node_j_1 = parent[j_1];
+                double route_cost = init_cost + ((Distances[node_i][node_j] + Distances[node_i_1][node_j_1]) - (Distances[node_i][node_i_1] + Distances[node_j][node_j_1]));
                 
                 if(route_cost < best_cost)
                 {
@@ -418,7 +422,14 @@ void Util::or_exhcange(int *sol, double **Distances, int num_c, int num_v)
                 int i2 = i1 + 1;
                 int i2_add_1 = i2 + 1;
                 
-                double new_cost = init_cost + ((Distances[i1_sub_1][i2_add_1] + Distances[i2][j] + Distances[i1][j_1]) - (Distances[i1_sub_1][i1] + Distances[i2][i2_add_1] + Distances[j_1][j]));
+                int node_i1 = parent[i1];
+                int node_i1_sub_1 = parent[i1_sub_1];
+                int node_i2 = parent[i2];
+                int node_i2_add_1 = parent[i2_add_1];
+                int node_j = parent[j];
+                int node_j_add_1 = parent[j_1];
+                
+                double new_cost = init_cost + ((Distances[node_i1_sub_1][node_i2_add_1] + Distances[node_i2][node_j] + Distances[node_i1][node_j_add_1]) - (Distances[node_i1_sub_1][node_i1] + Distances[node_i2][node_i2_add_1] + Distances[node_j_add_1][node_j]));
                 
                 if(new_cost < best_cost)
                 {
@@ -529,7 +540,19 @@ void Util::cross_exchange(int *sol, double **Distances, int num_c, int num_v)
                                 int X2_P = X2 + 1;
                                 int Y2_P = Y2 + 1;
                                 
-                                double new_cost = init_cost + ((Distances[X1][X2_P] + Distances[Y2][Y1_P] + Distances[X2][X1_P] + Distances[Y1][Y2_P]) - (Distances[X1][X1_P] + Distances[Y1][Y1_P] + Distances[X2][X2_P] + Distances[Y2][Y2_P]));
+                                
+                                int node_X1 = temp_route_split[i][X1];
+                                int node_X1_P = temp_route_split[i][X1_P];
+                                int node_Y1 = temp_route_split[i][Y1];
+                                int node_Y1_P = temp_route_split[i][Y1_P];
+                                
+                                int node_X2 = temp_route_split[j][X2];
+                                int node_X2_P = temp_route_split[j][X2_P];
+                                int node_Y2 = temp_route_split[j][Y2];
+                                int node_Y2_P = temp_route_split[j][Y2_P];
+                                
+                                double new_cost = init_cost + ((Distances[node_X1][node_X2_P] + Distances[node_Y2][node_Y1_P] + Distances[node_X2][node_X1_P] + Distances[node_Y1][node_Y2_P]) - (Distances[node_X1][node_X1_P] + Distances[node_Y1][node_Y1_P] + Distances[node_X2][node_X2_P] + Distances[node_Y2][node_Y2_P]));
+                                
                                 if(new_cost < init_cost)
                                 {
                                     // build route
@@ -1831,7 +1854,7 @@ void update_seq(int *origin, int i, int j, int num_node){
 
 void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances)
 {
-    int tabu_num = (int)((num_c + num_v)*0.1);
+    int tabu_num = (int)((num_c + num_v)*0.15);
     // reset tabu counter
     for(int i = 0; i < num_c; i++)
     {
@@ -2859,4 +2882,376 @@ void Util::Interchange22FIX(Solution sol, double **Distances, int num_c, int num
             }
         }
     }
+}
+
+void Util::Two_Exchange(int *sol, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
+{
+    Move best_move;
+    best_move.varCost = 100000.0;
+    best_move.cus_1 = -1;
+    best_move.cus_2 = -1;
+    int begin_route_num = num_c;
+    int s, begin = 0, end = 0, i, j;
+    int parent[num_c + num_v];
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        parent[s] = sol[s];
+        Best_Route_Education[s] = sol[s];
+    }
+    while (parent[begin] < (num_c + num_v))
+    {
+        begin = end + 1;
+        while (parent[begin] >= begin_route_num)
+            begin++;
+        end = begin + 1;
+        while (parent[end] < begin_route_num)
+            end++;
+        
+        if((parent[begin] > num_c + num_v) || (parent[end] > num_c + num_v)) break;
+        if(begin >= num_c + num_v || end >= num_c + num_v) break;
+        
+        for(i = begin; i < end - 2; i++)
+            for(j = i + 2; j < end - 1; j++)
+            {
+                int i_1 = i + 1;
+                int j_1 = j + 1;
+                int node_i = parent[i];
+                int node_i_1 = parent[i_1];
+                int node_j = parent[j];
+                int node_j_1 = parent[j_1];
+                double var_cost = (Distances[node_i][node_j] + Distances[node_i_1][node_j_1] - (Distances[node_i][node_i_1] + Distances[node_j][node_j_1]));
+                if(var_cost < 0.0 && var_cost < best_move.varCost && validate_two_exchange(sol, begin, end, i, j, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances, num_c, num_v))
+                {
+                    best_move.varCost = var_cost;
+                    best_move.cus_1 = i;
+                    best_move.cus_2 = j;
+                }
+            }
+        if(end == num_c + num_v) break;
+    }
+    
+    // update route
+    if(best_move.cus_1 != -1 &&best_move.cus_2 != -1)
+    {
+        int cus_1 = best_move.cus_1;
+        int cus_2 = best_move.cus_2;
+        for(int it = 0; it <= cus_1; it++)
+            sol[it] = parent[it];
+        
+        for(int it = cus_2; it < num_c + num_v; it++)
+            sol[it] = parent[it];
+        
+        int index = cus_1;
+        for(int it = cus_2 - 1; it > cus_1; it--)
+        {
+            index++;
+            sol[index] = parent[it];
+        }
+    }
+}
+
+bool Util::validate_two_exchange(int *seq, int begin, int end, int i, int j, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int num_c, int num_v)
+{
+    int new_seq[num_c + num_v];
+    bool though_stat[num_c + num_v];
+    for(int it = 0; it <= i; it++)
+        new_seq[it] = seq[it];
+    for(int it = j; it < num_c + num_v; it++)
+        new_seq[it] = seq[it];
+    
+    int index = i;
+    for(int it = j - 1; it > i; it--)
+    {
+        index++;
+        new_seq[index] = seq[it];
+    }
+    
+    return find_through_station(new_seq, though_stat, num_c, num_v, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances);
+}
+
+
+
+
+
+
+
+
+
+
+
+void Util::Or_Exchange(int *sol, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
+{
+    Move best_move;
+    best_move.varCost = 100000.0;
+    best_move.cus_1 = -1;
+    best_move.cus_2 = -1;
+    int begin_route_num = num_c;
+    int s, begin = 0, end = 0, i, j;
+    int parent[num_c + num_v];
+    for(s = 0; s < num_c + num_v; s++)
+    {
+        parent[s] = sol[s];
+        Best_Route_Education[s] = sol[s];
+    }
+    
+    while (parent[begin] < (num_c + num_v)) {
+        begin = end + 1;
+        while (parent[begin] >= begin_route_num)
+            begin++;
+        end = begin + 1;
+        while (parent[end] < begin_route_num)
+            end++;
+        
+        if((parent[begin] > num_c + num_v) || (parent[end] > num_c + num_v)) break;
+        if(begin >= num_c + num_v || end >= num_c + num_v) break;
+        for(i = begin + 1; i < end - 5;i++)
+        {
+            for(j = i + 3; j < end - 1; j++)
+            {
+                int j_add_1 = j + 1;
+                int i1_sub_1 = i - 1;
+                int i1 = i;
+                int i2 = i1 + 1;
+                int i2_add_1 = i2 + 1;
+                
+                int node_j = parent[j];
+                int node_j_add_1 = parent[j_add_1];
+                int node_i1 = parent[i1];
+                int node_i1_sub_1 = parent[i1_sub_1];
+                int node_i2 = parent[i2];
+                int node_i2_add_1 = parent[i2_add_1];
+                
+                double var_cost = (Distances[node_i1_sub_1][node_i2_add_1] + Distances[node_j_add_1][node_i2] + Distances[node_i2][node_i1] + Distances[node_j][node_i1]) - (Distances[node_i1_sub_1][node_i1] + Distances[node_i1][node_i2] + Distances[node_i2][node_i2_add_1] + Distances[node_j][node_j_add_1]);
+                
+                if(var_cost < 0.0 && var_cost < best_move.varCost && validate_or_exchange(sol, i, j, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances, num_c, num_v))
+                {
+                    best_move.varCost = var_cost;
+                    best_move.cus_1 = i1;
+                    best_move.cus_2 = j;
+                }
+            }
+        }
+    }
+    
+    // update best move
+    if(best_move.cus_1 != -1 && best_move.cus_2 != -1)
+    {
+        int i1 = best_move.cus_1;
+        int i1_sub_1 = i1 - 1;
+        int i2 = i1 + 1;
+        int i2_add_1 = i2 + 1;
+        int j = best_move.cus_2;
+        int j_add_1 = j + 1;
+        
+        int k = 0;
+        for(k = 0; k <= i1_sub_1; k++)
+        {
+            sol[k] = parent[k];
+        }
+        
+        sol[k] = parent[i2_add_1];
+        for(int k1 = i2_add_1 + 1; k1 <= j; k1++)
+        {
+            k++;
+            sol[k] = parent[k1];
+        }
+        for(int k1 = i1; k1 <= i2; k1++)
+        {
+            k++;
+            sol[k] = parent[k1];
+        }
+        for(int k1 = j_add_1; k1 < num_c + num_v; k1++)
+        {
+            k++;
+            sol[k] = parent[k1];
+        }
+    }
+}
+
+bool Util::validate_or_exchange(int *seq, int i, int j, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int num_c, int num_v)
+{
+    int i1_sub_1 = i - 1;
+    int i1 = i;
+    int i2 = i1 + 1;
+    int i2_add_1 = i2 + 1;
+    int j_add_1 = j + 1;
+    int new_seq[num_c + num_v];
+    bool though_stat[num_c + num_v];
+    int k = 0;
+    for(k = 0; k <= i1_sub_1; k++)
+    {
+        new_seq[k] = seq[k];
+    }
+    
+    new_seq[k] = seq[i2_add_1];
+    for(int k1 = i2_add_1 + 1; k1 <= j; k1++)
+    {
+        k++;
+        new_seq[k] = seq[k1];
+    }
+    for(int k1 = i1; k1 <= i2; k1++)
+    {
+        k++;
+        new_seq[k] = seq[k1];
+    }
+    for(int k1 = j_add_1; k1 < num_c + num_v; k1++)
+    {
+        k++;
+        new_seq[k] = seq[k1];
+    }
+    
+    return  find_through_station(new_seq, though_stat, num_c, num_v, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances);
+}
+
+
+void Util::Cross_Exchange(int *sol, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
+{
+    int parent[num_c + num_v];
+    bool through_stat[num_c + num_v];
+    double route_cap[num_v];
+    for(int s = 0; s < num_v; s++)
+        route_cap[s] = 0.0;
+    double best_var_cost = 10000.0;
+    int temp_route_split[num_v][num_c + num_v];
+    for(int i = 0; i < num_v; i++)
+        for(int j = 0; j < num_v + num_c; j++)
+            temp_route_split[i][j] = num_c + num_v + 1;
+    
+    // split route
+    int index_route = 0;
+    int index_node = 0;
+    for(int i = 1; i < num_c + num_v; i++)
+    {
+        int node = sol[i];
+        if(node < num_c)
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            route_cap[index_route] += Demands[node];
+        }
+        else
+        {
+            index_node++;
+            temp_route_split[index_route][index_node] = node;
+            temp_route_split[index_route][0] = index_node;
+            if(i < num_c + num_v - 1)
+            {
+                index_route++;
+                index_node = 0;
+                if(index_route > num_v)
+                    return;
+            }
+        }
+    }
+    
+    // cross exchange
+    for(int i = 0; i < index_route; i++)
+        for(int j = i + 1; j < index_route; j++)
+        {
+            int numc_route_i = temp_route_split[i][0];
+            int numc_route_j = temp_route_split[j][0];
+            
+            if(numc_route_i >= 5 && numc_route_j >= 5)
+                for(int X1 = 1; X1 <= numc_route_i - 4; X1++)
+                    for(int Y1 = X1 + 2; Y1 <= numc_route_i - 2; Y1++)
+                    {
+                        int X1_P = X1 + 1;
+                        int Y1_P = Y1 + 1;
+                        
+                        for(int X2 = 1; X2 < numc_route_j - 4; X2++)
+                            for(int Y2 = X2 + 2; Y2 < numc_route_j - 2; Y2++)
+                            {
+                                int X2_P = X2 + 1;
+                                int Y2_P = Y2 + 1;
+                                
+                                int node_X1 = temp_route_split[i][X1];
+                                int node_X1_P = temp_route_split[i][X1_P];
+                                int node_Y1 = temp_route_split[i][Y1];
+                                int node_Y1_P = temp_route_split[i][Y1_P];
+                                
+                                int node_X2 = temp_route_split[j][X2];
+                                int node_X2_P = temp_route_split[j][X2_P];
+                                int node_Y2 = temp_route_split[j][Y2];
+                                int node_Y2_P = temp_route_split[j][Y2_P];
+                                
+                                double var_cost = ((Distances[node_X1][node_X2_P] + Distances[node_Y2][node_Y1_P] + Distances[node_X2][node_X1_P] + Distances[node_Y1][node_Y2_P]) - (Distances[node_X1][node_X1_P] + Distances[node_Y1][node_Y1_P] + Distances[node_X2][node_X2_P] + Distances[node_Y2][node_Y2_P]));
+                                
+                                double demand_i = 0.0;
+                                for(int s = X1_P; s <= Y1;s++)
+                                    demand_i += Demands[temp_route_split[i][s]];
+                                
+                                double demand_j = 0.0;
+                                for(int s = X2_P; s <= Y2; s++)
+                                    demand_j += Demands[temp_route_split[j][s]];
+                                
+                                if(var_cost < 0.0 && var_cost < best_var_cost && (route_cap[i] + demand_j - demand_i) < max_cap && (route_cap[j] + demand_i - demand_j) < max_cap)
+                                {
+                                    best_var_cost = var_cost;
+                                    // build route
+                                    int index = 0;
+                                    parent[0] = 0;
+                                    for(int i1 = 1; i1 <= X1; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[i][i1];
+                                    }
+                                    for(int i1 = X2_P; i1 <= Y2; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[j][i1];
+                                    }
+                                    for(int i1 = Y1_P; i1 <= numc_route_i; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[i][i1];
+                                    }
+                                    for(int i1 = 1; i1 <= X2; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[j][i1];
+                                    }
+                                    for(int i1 = X1_P; i1 <= Y1; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[i][i1];
+                                    }
+                                    for(int i1 = Y2_P; i1 <= numc_route_j; i1++)
+                                    {
+                                        index++;
+                                        if(index > num_c + num_v) break;
+                                        parent[index] = temp_route_split[j][i1];
+                                    }
+                                    
+                                    for(int i2 = 0; i2 <= index_route; i2++)
+                                    {
+                                        if(i2 != i && i2 != j)
+                                        {
+                                            int numc = temp_route_split[i2][0];
+                                            for(int i1 = 1; i1 <= numc; i1++)
+                                            {
+                                                index++;
+                                                if(index > num_c + num_v) break;
+                                                parent[index] = temp_route_split[i2][i1];
+                                            }
+                                        }
+                                    }
+                                    
+                                    if(find_through_station(parent, through_stat, num_c, num_v, max_eng, eng_consum, Distances, Best_Stat, Best_Stat_Distances))
+                                    {
+                                        printf("\nRoute Cap i: %lf", (route_cap[i] + (Demands[X2_P] + Demands[Y2]) - (Demands[X1_P] + Demands[Y1])));
+                                        printf("\nRoute Cap j: %lf", (route_cap[j] + (Demands[X1_P] + Demands[Y1]) - (Demands[X2_P] + Demands[Y2])));
+                                        printf("\nMax Cap: %lf", max_cap);
+                                        for(int s = 0; s < num_c + num_v; s++)
+                                            sol[s] = parent[s];
+                                        return;
+                                    }
+                                }
+                            }
+                    }
+        }
 }

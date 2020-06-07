@@ -54,6 +54,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0416BD8F24854DFD00A3985D /* tabu_search_En22_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_En22_k4.txt; path = ../tabu_search_En22_k4.txt; sourceTree = "<group>"; };
+		0416BD902485571800A3985D /* tabu_search_En23_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_En23_k3.txt; path = ../tabu_search_En23_k3.txt; sourceTree = "<group>"; };
+		0416BD912485C2D400A3985D /* tabu_search_E_n30_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_E_n30_k3.txt; path = ../tabu_search_E_n30_k3.txt; sourceTree = "<group>"; };
+		0416BD922485C4A400A3985D /* tabu_search_En33_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_En33_k4.txt; path = ../tabu_search_En33_k4.txt; sourceTree = "<group>"; };
+		0416BD932485C62E00A3985D /* tabu_search_En_51_k5.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_En_51_k5.txt; path = ../tabu_search_En_51_k5.txt; sourceTree = "<group>"; };
+		0416BD942485C82100A3985D /* tabu_search_E_n76_k7.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_E_n76_k7.txt; path = ../tabu_search_E_n76_k7.txt; sourceTree = "<group>"; };
+		0416BD952485CA1900A3985D /* tabu_search_En101_k8.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = tabu_search_En101_k8.txt; path = ../tabu_search_En101_k8.txt; sourceTree = "<group>"; };
+		0427E0F02488F38100A8C19E /* GA_Tabu_1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_1.txt; sourceTree = "<group>"; };
+		0427E0F22489179300A8C19E /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n23-k3.evrp"; sourceTree = "<group>"; };
+		0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_search.txt; sourceTree = "<group>"; };
+		0427E0F4248CEA0200A8C19E /* GA_Local_Search.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Local_Search.txt; sourceTree = "<group>"; };
 		04505471246EEB3F001C02B0 /* Util.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
 		04505472246EEB3F001C02B0 /* Util.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
 		045C0F04246D579C00CFBBEA /* EVRP_STD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EVRP_STD; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +84,7 @@
 		04A5E78524715C8A007B73DB /* E-n51-k5.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n51-k5.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n51-k5.evrp"; sourceTree = "<group>"; };
 		04A5E78724715CA3007B73DB /* E-n76-k7.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n76-k7.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n76-k7.evrp"; sourceTree = "<group>"; };
 		04A5E78924715CB7007B73DB /* E-n101-k8.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n101-k8.evrp"; sourceTree = "<group>"; };
+		04CF4C1E2486C28800A8E03B /* optimal_addition.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = optimal_addition.txt; sourceTree = "<group>"; };
 		04F969F12473126800CF3B68 /* result.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = result.txt; path = ../../result.txt; sourceTree = "<group>"; };
 		04F969F32473147700CF3B68 /* result.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = result.txt; sourceTree = "<group>"; };
 		04F969F42473172300CF3B68 /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -92,6 +104,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0427E0EF2488F35600A8C19E /* Result */ = {
+			isa = PBXGroup;
+			children = (
+				04F969F32473147700CF3B68 /* result.txt */,
+				0416BD8F24854DFD00A3985D /* tabu_search_En22_k4.txt */,
+				0416BD922485C4A400A3985D /* tabu_search_En33_k4.txt */,
+				0416BD912485C2D400A3985D /* tabu_search_E_n30_k3.txt */,
+				0416BD932485C62E00A3985D /* tabu_search_En_51_k5.txt */,
+				04CF4C1E2486C28800A8E03B /* optimal_addition.txt */,
+				0416BD942485C82100A3985D /* tabu_search_E_n76_k7.txt */,
+				0416BD952485CA1900A3985D /* tabu_search_En101_k8.txt */,
+				0416BD902485571800A3985D /* tabu_search_En23_k3.txt */,
+				0427E0F02488F38100A8C19E /* GA_Tabu_1.txt */,
+				0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */,
+				0427E0F4248CEA0200A8C19E /* GA_Local_Search.txt */,
+			);
+			path = Result;
+			sourceTree = "<group>";
+		};
+		0427E0F12488F40500A8C19E /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				0427E0F22489179300A8C19E /* E-n23-k3.evrp */,
+				04A5E78924715CB7007B73DB /* E-n101-k8.evrp */,
+				04F969F72473190B00CF3B68 /* E-n76-k7.evrp */,
+				04F969F52473177600CF3B68 /* E-n33-k4.evrp */,
+				04F969F42473172300CF3B68 /* E-n30-k3.evrp */,
+				04F969F6247317FB00CF3B68 /* E-n51-k5.evrp */,
+				045C0F12246D9CE300CFBBEA /* E-n22-k4.evrp */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		045C0EFB246D579C00CFBBEA = {
 			isa = PBXGroup;
 			children = (
@@ -119,18 +164,13 @@
 		045C0F06246D579C00CFBBEA /* EVRP_STD */ = {
 			isa = PBXGroup;
 			children = (
+				0427E0F12488F40500A8C19E /* Data */,
+				0427E0EF2488F35600A8C19E /* Result */,
 				045C0F07246D579C00CFBBEA /* main.cpp */,
 				045C0F0E246D58C300CFBBEA /* Solution.cpp */,
-				045C0F12246D9CE300CFBBEA /* E-n22-k4.evrp */,
-				04A5E78924715CB7007B73DB /* E-n101-k8.evrp */,
-				04F969F72473190B00CF3B68 /* E-n76-k7.evrp */,
-				04F969F6247317FB00CF3B68 /* E-n51-k5.evrp */,
-				04F969F52473177600CF3B68 /* E-n33-k4.evrp */,
-				04F969F42473172300CF3B68 /* E-n30-k3.evrp */,
 				045C0F0F246D58C300CFBBEA /* Solution.hpp */,
 				04505471246EEB3F001C02B0 /* Util.cpp */,
 				04505472246EEB3F001C02B0 /* Util.hpp */,
-				04F969F32473147700CF3B68 /* result.txt */,
 				0465D17E247BC8A7006CE739 /* Customer.cpp */,
 				0465D17F247BC8A7006CE739 /* Customer.hpp */,
 				0465D181247BD41B006CE739 /* Move.cpp */,
