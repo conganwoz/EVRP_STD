@@ -629,7 +629,7 @@ double Util::dist_comsum(double distance, double eng_consum)
 }
 
 bool Util::find_through_station(int * sol, bool *through_stat, int num_c, int num_v, double max_eng, double eng_consum, double ** Distances,int **Best_Stat, double **Best_Stat_Distances)
-{
+{    
     bool is_back_track[num_c + num_v];
     for(int i = 0; i < num_c + num_v; i++)
     {
@@ -1854,7 +1854,7 @@ void update_seq(int *origin, int i, int j, int num_node){
 
 void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_fitness, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances)
 {
-    int tabu_num = (int)((num_c + num_v)*0.15);
+    int tabu_num = (int)((num_c + num_v)*0.1);
     // reset tabu counter
     for(int i = 0; i < num_c; i++)
     {
@@ -1870,7 +1870,7 @@ void Util::Tabu_search(int *seq, double **Distances, int num_c, int num_v, doubl
     }
     double finess_Zt = init_fitness;
     FIT_BEST = init_fitness;
-    for(int it = 0; it < 100; it++)
+    for(int it = 0; it < 150; it++)
     {
         Move best_move = CallEvaluate(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
         if(best_move.cus_1 != -1)

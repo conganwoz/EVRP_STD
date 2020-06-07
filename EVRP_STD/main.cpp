@@ -271,6 +271,65 @@ void find_nearest_seed(){
     }
 }
 
+
+void mutation()
+{
+    int i, begin_rand, end_rand;
+    int num_node = NUM_CUSTOMERS + NUM_VEHICLES;
+    int seq_choosen[NUM_CUSTOMERS + NUM_VEHICLES];
+    int seq[num_node];
+    for(i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+    {
+        seq_choosen[i] = i;
+    }
+    
+    int parent = (int)(rand() % (int)(NUM_SOL * 0.3)) + 1;
+    for(int i = 0; i < num_node; i++)
+        seq[i] = Solutions[parent].seq_node[i];
+    begin_rand = (int)(rand() % (num_node - 1)) + 1;
+    int temp = seq_choosen[begin_rand];
+    seq_choosen[begin_rand] = seq_choosen[num_node - 1];
+    seq_choosen[num_node - 1] = temp;
+    begin_rand = seq_choosen[num_node - 1];
+    
+    end_rand = (int)(rand() % (num_node - 2)) + 1;
+    temp = seq_choosen[end_rand];
+    seq_choosen[end_rand] = seq_choosen[num_node - 2];
+    seq_choosen[num_node - 2] = temp;
+    end_rand = seq_choosen[num_node - 2];
+    
+    if(begin_rand > end_rand)
+    {
+        int temp = begin_rand;
+        begin_rand = end_rand;
+        end_rand = temp;
+    }
+    
+//    temp = seq[begin_rand];
+//    seq[begin_rand] = seq[end_rand];
+//    seq[end_rand] = temp;
+    
+    for(int i = 0; i < (end_rand - begin_rand)/2; i++)
+    {
+        int temp = seq[begin_rand + i];
+        seq[begin_rand + i] = seq[end_rand - i];
+        seq[end_rand - i] = temp;
+    }
+    
+    Solution new_sol;
+    new_sol.init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
+    for(int i = 0; i < num_node; i++)
+        new_sol.seq_node[i] = seq[i];
+    
+    new_sol.is_feasible = U.find_through_station(new_sol.seq_node, new_sol.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+    new_sol.compute_cost(Distances, Best_Station_Distances);
+    new_sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
+    if(Solutions[parent].over_capacity > 0.0) new_sol.is_feasible = false;
+    new_sol.fitness = new_sol.cost + ALPHA * new_sol.over_capacity;
+    Solutions[parent] = new_sol;
+}
+
+
 // compare Customer's distances
 int compare_customer_distances(const void *ptr1, const void *ptr2)
 {
@@ -735,11 +794,40 @@ void tune_result(){
     }
 }
 
+void local_optimize(int *seq, double init_fitness, double init_cost)
+{
+    int list_rand[3] = {0,1,2};
+    int rand1 = rand() % 3;
+    int temp = list_rand[0];
+    list_rand[0] = list_rand[rand1];
+    list_rand[rand1] = temp;
+    int rand2 = rand() % 3;
+    temp = list_rand[0];
+    list_rand[0] = list_rand[rand2];
+    list_rand[rand2] = temp;
+    
+    for(int i = 0; i < 3; i++)
+    {
+        switch (i) {
+            case 0:
+                U.Two_Exchange(seq, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, init_fitness, List_Nearest_Cus, init_cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+                break;
+            case 1:
+                U.Or_Exchange(seq, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, init_fitness, List_Nearest_Cus, init_cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+                break;
+            case 2:
+                U.Cross_Exchange(seq, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, init_fitness, List_Nearest_Cus, init_cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            default:
+                break;
+        }
+    }
+}
+
 int main(int argc, const char * argv[]) {
     printf("\nBEGIN POTVIN + TABU SEARCH\n");
     FILE *fp;
-    fp = fopen("./Result/GA_Tabu_search.txt", "a");
-    int loop = 200;
+    fp = fopen("./Result/Local_optimal.txt", "a");
+    int loop = 250;
     srand((unsigned)time(NULL));
     read_file((char *)"./Data/E-n101-k8.evrp");
     
@@ -749,53 +837,71 @@ int main(int argc, const char * argv[]) {
     fprintf(fp, "\n--------------------------------------------------------------------------------\n");
     
     
-    auto start = high_resolution_clock::now();
-    prepare_data();
-    init_population();
-    compute_meta_data();
-    for(int i = 0; i < loop; i++)
+    for(int IT = 0; IT < 2; IT++)
     {
-        build_Roulette_wheel_arr();
-        select_parent_to_pool_distinct();
-        cross_over();
+        
+        
+        
+        
+        fprintf(fp, "\n--------------------------------------------------------------------------------\n");
+        auto start = high_resolution_clock::now();
+        prepare_data();
+        init_population();
         compute_meta_data();
-        inspect_sol(Solutions[0], i);
-        if(Solutions[0].is_feasible && Solutions[0].cost < Best_Cost)
+        int not_improve = 0;
+        for(int i = 0; i < loop; i++)
         {
-            Best_Cost = Solutions[0].cost;
-            Index_Best = i;
+            build_Roulette_wheel_arr();
+            select_parent_to_pool_distinct();
+            if(not_improve == 10)
+            {
+                not_improve = 0;
+                mutation();
+            } else
+            {
+                cross_over();
+            }
+            compute_meta_data();
+            inspect_sol(Solutions[0], i);
+            if(Solutions[0].is_feasible && Solutions[0].cost < Best_Cost)
+            {
+                Best_Cost = Solutions[0].cost;
+                Index_Best = i;
+                not_improve = 0;
+            } else {
+                not_improve++;
+            }
         }
-    }
-    
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-
-    int best_sol = -1;
-    double best_cost = 10000000;
-
-    // FIND THE BEST SEED
-    for(int i = 0; i < NUM_SOL; i++)
-    {
-        if(Solutions[i].cost < best_cost && Solutions[i].is_feasible)
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        
+        int best_sol = -1;
+        double best_cost = 10000000;
+        
+        // FIND THE BEST SEED
+        for(int i = 0; i < NUM_SOL; i++)
         {
-            best_sol = i;
-            best_cost = Solutions[i].cost;
+            if(Solutions[i].cost < best_cost && Solutions[i].is_feasible)
+            {
+                best_sol = i;
+                best_cost = Solutions[i].cost;
+            }
         }
-    }
-    
-    
-    Solutions[best_sol].is_feasible = true;
-    Solutions[best_sol].is_feasible = U.find_through_station(Solutions[best_sol].seq_node, Solutions[best_sol].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
-    Solutions[best_sol].compute_cost(Distances, Best_Station_Distances);
-    Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
-    if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
-    
-    
-    
-    
-    
-    
-
+        
+        
+        Solutions[best_sol].is_feasible = true;
+        Solutions[best_sol].is_feasible = U.find_through_station(Solutions[best_sol].seq_node, Solutions[best_sol].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        Solutions[best_sol].compute_cost(Distances, Best_Station_Distances);
+        Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
+        if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
+        
+        
+        
+        
+        
+        
+        
         printf("\n========================================\n");
         printf("\nDISTANCES______________________________________________________________\n");
         for(int i = 0; i < DIMENTION; i++)
@@ -805,7 +911,7 @@ int main(int argc, const char * argv[]) {
                 printf("\n(%d, %d)= %lf", i, j, Distances[i][j]);
             }
         }
-    
+        
         printf("\nTHROUGHT STATION_______________________________________________________\n");
         for(int i = 0; i < NUM_CUSTOMERS; i++)
         {
@@ -827,91 +933,94 @@ int main(int argc, const char * argv[]) {
         {
             printf("\n CAP(%d) = %lf", i, Demands[i]);
         }
-    
-    
-    printf("\nCOORD DATA\n");
-    for(int k = 0; k < DIMENTION; k++)
-    {
-        printf("\n %d - (%lf, %lf)", k, Coords[k][0], Coords[k][1]);
+        
+        
+        printf("\nCOORD DATA\n");
+        for(int k = 0; k < DIMENTION; k++)
+        {
+            printf("\n %d - (%lf, %lf)", k, Coords[k][0], Coords[k][1]);
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        fprintf(fp, "\nLần 2: BEST ROUTE FOUND: %d - Cost: %0.3lf - optimal: %.3lf", best_sol, best_cost, OPTIMAL_VALUE);
+        fprintf(fp, "\nRoute: ");
+        for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
+        {
+            fprintf(fp, "%d -> ", Solutions[best_sol].seq_node[i]);
+        }
+        
+        fprintf(fp, "\nThrought_station: ");
+        for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
+        {
+            fprintf(fp, "%d -> ", Solutions[best_sol].is_though_stat[i]);
+        }
+        
+        printf("\nBEST ROUTE\n");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            printf("%d, ", Solutions[best_sol].seq_node[i]);
+        }
+        printf("\nBEST THROUGH STATION\n");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            printf("%d -> ", Solutions[best_sol].is_though_stat[i]);
+        }
+        
+        fprintf(fp, "\ntime_run: %llu milliseconds", duration.count() / 1000);
+        
+        printf("\n BEST SOL: %d - cost: %lf - is_feasible: %d - Optimal: %lf", best_sol, Solutions[best_sol].cost, Solutions[best_sol].is_feasible, OPTIMAL_VALUE);
+        printf("\n ----> Best_Cost: %lf - index: %d\n", Best_Cost, Index_Best);
+        fprintf(fp, "\n ----> Best_Cost: %lf - index: %d - Tabu: %d - NUM_SOL: %d - LOOP: %d\n", Best_Cost, Index_Best, (int)((NUM_CUSTOMERS + NUM_VEHICLES) * 0.1), NUM_SOL, loop);
+        
+        local_optimize(Solutions[best_sol].seq_node, Solutions[best_sol].fitness, Solutions[best_sol].cost);
+        
+        Solutions[best_sol].is_feasible = true;
+        Solutions[best_sol].is_feasible = U.find_through_station(Solutions[best_sol].seq_node, Solutions[best_sol].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        Solutions[best_sol].compute_cost(Distances, Best_Station_Distances);
+        Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
+        if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
+        
+        
+        printf("\nAFTER OPTIMAL BEST SOLUTION:\n");
+        inspect_sol(Solutions[best_sol], 1);
+        printf("\n");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            printf("%d, ", Solutions[best_sol].seq_node[i]);
+        }
+        printf("\nBEST THROUGH STATION\n");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            printf("%d -> ", Solutions[best_sol].is_though_stat[i]);
+        }
+        
+        fprintf(fp,"\nAFTER OPTIMAL BEST SOLUTION:\n");
+        fprintf(fp, "\nCOST: %lf - OVER_CAP: %lf - IS_FEASIBLE: %d - FITNESS: %lf - ALPHA: %lf\n", Solutions[best_sol].cost, Solutions[best_sol].over_capacity, Solutions[best_sol].is_feasible, Solutions[best_sol].fitness, ALPHA);
+        printf("\nRoute: ");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            fprintf(fp,"%d, ", Solutions[best_sol].seq_node[i]);
+        }
+        fprintf(fp, "\nBEST THROUGH STATION\n");
+        for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+        {
+            fprintf(fp, "%d -> ", Solutions[best_sol].is_though_stat[i]);
+        }
+        
+        
+        
+        
+        
+        
     }
-
-    
-    
-    
-    
-    
-    
-
-
-    fprintf(fp, "\nLần 2: BEST ROUTE FOUND: %d - Cost: %0.3lf - optimal: %.3lf", best_sol, best_cost, OPTIMAL_VALUE);
-    fprintf(fp, "\nRoute: ");
-    for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
-    {
-        fprintf(fp, "%d -> ", Solutions[best_sol].seq_node[i]);
-    }
-
-    fprintf(fp, "\nThrought_station: ");
-    for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
-    {
-        fprintf(fp, "%d -> ", Solutions[best_sol].is_though_stat[i]);
-    }
-
-    printf("\nBEST ROUTE\n");
-    for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
-    {
-        printf("%d, ", Solutions[best_sol].seq_node[i]);
-    }
-    printf("\nBEST THROUGH STATION\n");
-    for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
-    {
-        printf("%d -> ", Solutions[best_sol].is_though_stat[i]);
-    }
-
-    fprintf(fp, "\ntime_run: %llu milliseconds", duration.count() / 1000);
-
-    printf("\n BEST SOL: %d - cost: %lf - is_feasible: %d - Optimal: %lf", best_sol, Solutions[best_sol].cost, Solutions[best_sol].is_feasible, OPTIMAL_VALUE);
-    printf("\n ----> Best_Cost: %lf - index: %d\n", Best_Cost, Index_Best);
-    fprintf(fp, "\n ----> Best_Cost: %lf - index: %d - Tabu: %d - NUM_SOL: %d - LOOP: %d\n", Best_Cost, Index_Best, (int)((NUM_CUSTOMERS + NUM_VEHICLES) * 0.15), NUM_SOL, loop);
-    
-    
     fclose(fp);
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    U.Two_Exchange(Solutions[best_sol].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Solutions[best_sol].fitness, List_Nearest_Cus, Solutions[best_sol].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
-//    U.Or_Exchange(Solutions[best_sol].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Solutions[best_sol].fitness, List_Nearest_Cus, Solutions[best_sol].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
-//    U.Cross_Exchange(Solutions[best_sol].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Solutions[best_sol].fitness, List_Nearest_Cus, Solutions[best_sol].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
-//
-//    Solutions[best_sol].is_feasible = true;
-//    Solutions[best_sol].is_feasible = U.find_through_station(Solutions[best_sol].seq_node, Solutions[best_sol].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
-//    Solutions[best_sol].compute_cost(Distances, Best_Station_Distances);
-//    Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
-//    if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
-//
-//
-//    printf("\nAFTER OPTIMAL BEST SOLUTION:\n");
-//    inspect_sol(Solutions[best_sol], 1);
-//    printf("\n");
-//    for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
-//    {
-//        printf("%d, ", Solutions[best_sol].seq_node[i]);
-//    }
-//    printf("\nBEST THROUGH STATION\n");
-//    for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
-//    {
-//        printf("%d -> ", Solutions[best_sol].is_though_stat[i]);
-//    }
     return 0;
 }
