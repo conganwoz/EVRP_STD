@@ -20,6 +20,19 @@
 		04A5E78624715C8A007B73DB /* E-n51-k5.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E78524715C8A007B73DB /* E-n51-k5.evrp */; };
 		04A5E78824715CA3007B73DB /* E-n76-k7.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E78724715CA3007B73DB /* E-n76-k7.evrp */; };
 		04A5E78A24715CB7007B73DB /* E-n101-k8.evrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04A5E78924715CB7007B73DB /* E-n101-k8.evrp */; };
+		04DAA64A248E874C00E07545 /* bayg-n29-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA63D248E874A00E07545 /* bayg-n29-k4.vrp */; };
+		04DAA64B248E874C00E07545 /* swiss-n42-k5.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA63E248E874B00E07545 /* swiss-n42-k5.vrp */; };
+		04DAA64C248E874C00E07545 /* bays-n29-k5.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA63F248E874B00E07545 /* bays-n29-k5.vrp */; };
+		04DAA64D248E874C00E07545 /* ulysses-n22-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA640248E874B00E07545 /* ulysses-n22-k4.vrp */; };
+		04DAA64E248E874D00E07545 /* gr-n21-k3.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA641248E874B00E07545 /* gr-n21-k3.vrp */; };
+		04DAA64F248E874D00E07545 /* hk-n48-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA642248E874B00E07545 /* hk-n48-k4.vrp */; };
+		04DAA650248E874D00E07545 /* gr-n48-k3.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA643248E874B00E07545 /* gr-n48-k3.vrp */; };
+		04DAA651248E874D00E07545 /* att-n48-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA644248E874B00E07545 /* att-n48-k4.vrp */; };
+		04DAA652248E874D00E07545 /* gr-n24-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA645248E874C00E07545 /* gr-n24-k4.vrp */; };
+		04DAA653248E874D00E07545 /* ulysses-n16-k3.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA646248E874C00E07545 /* ulysses-n16-k3.vrp */; };
+		04DAA654248E874D00E07545 /* fri-n26-k3.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA647248E874C00E07545 /* fri-n26-k3.vrp */; };
+		04DAA655248E874D00E07545 /* dantzig-n42-k4.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA648248E874C00E07545 /* dantzig-n42-k4.vrp */; };
+		04DAA656248E874D00E07545 /* gr-n17-k3.vrp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04DAA649248E874C00E07545 /* gr-n17-k3.vrp */; };
 		04F969F22473126800CF3B68 /* result.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F969F12473126800CF3B68 /* result.txt */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +53,19 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				04DAA64A248E874C00E07545 /* bayg-n29-k4.vrp in CopyFiles */,
+				04DAA64B248E874C00E07545 /* swiss-n42-k5.vrp in CopyFiles */,
+				04DAA64C248E874C00E07545 /* bays-n29-k5.vrp in CopyFiles */,
+				04DAA64D248E874C00E07545 /* ulysses-n22-k4.vrp in CopyFiles */,
+				04DAA64E248E874D00E07545 /* gr-n21-k3.vrp in CopyFiles */,
+				04DAA64F248E874D00E07545 /* hk-n48-k4.vrp in CopyFiles */,
+				04DAA650248E874D00E07545 /* gr-n48-k3.vrp in CopyFiles */,
+				04DAA651248E874D00E07545 /* att-n48-k4.vrp in CopyFiles */,
+				04DAA652248E874D00E07545 /* gr-n24-k4.vrp in CopyFiles */,
+				04DAA653248E874D00E07545 /* ulysses-n16-k3.vrp in CopyFiles */,
+				04DAA654248E874D00E07545 /* fri-n26-k3.vrp in CopyFiles */,
+				04DAA655248E874D00E07545 /* dantzig-n42-k4.vrp in CopyFiles */,
+				04DAA656248E874D00E07545 /* gr-n17-k3.vrp in CopyFiles */,
 				04F969F22473126800CF3B68 /* result.txt in CopyFiles */,
 				04A5E78A24715CB7007B73DB /* E-n101-k8.evrp in CopyFiles */,
 				04A5E78824715CA3007B73DB /* E-n76-k7.evrp in CopyFiles */,
@@ -86,6 +112,32 @@
 		04A5E78724715CA3007B73DB /* E-n76-k7.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n76-k7.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n76-k7.evrp"; sourceTree = "<group>"; };
 		04A5E78924715CB7007B73DB /* E-n101-k8.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n101-k8.evrp"; sourceTree = "<group>"; };
 		04CF4C1E2486C28800A8E03B /* optimal_addition.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = optimal_addition.txt; sourceTree = "<group>"; };
+		04DAA63D248E874A00E07545 /* bayg-n29-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "bayg-n29-k4.vrp"; path = "../../../Downloads/TSPLIB/bayg-n29-k4.vrp"; sourceTree = "<group>"; };
+		04DAA63E248E874B00E07545 /* swiss-n42-k5.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "swiss-n42-k5.vrp"; path = "../../../Downloads/TSPLIB/swiss-n42-k5.vrp"; sourceTree = "<group>"; };
+		04DAA63F248E874B00E07545 /* bays-n29-k5.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "bays-n29-k5.vrp"; path = "../../../Downloads/TSPLIB/bays-n29-k5.vrp"; sourceTree = "<group>"; };
+		04DAA640248E874B00E07545 /* ulysses-n22-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "ulysses-n22-k4.vrp"; path = "../../../Downloads/TSPLIB/ulysses-n22-k4.vrp"; sourceTree = "<group>"; };
+		04DAA641248E874B00E07545 /* gr-n21-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "gr-n21-k3.vrp"; path = "../../../Downloads/TSPLIB/gr-n21-k3.vrp"; sourceTree = "<group>"; };
+		04DAA642248E874B00E07545 /* hk-n48-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "hk-n48-k4.vrp"; path = "../../../Downloads/TSPLIB/hk-n48-k4.vrp"; sourceTree = "<group>"; };
+		04DAA643248E874B00E07545 /* gr-n48-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "gr-n48-k3.vrp"; path = "../../../Downloads/TSPLIB/gr-n48-k3.vrp"; sourceTree = "<group>"; };
+		04DAA644248E874B00E07545 /* att-n48-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "att-n48-k4.vrp"; path = "../../../Downloads/TSPLIB/att-n48-k4.vrp"; sourceTree = "<group>"; };
+		04DAA645248E874C00E07545 /* gr-n24-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "gr-n24-k4.vrp"; path = "../../../Downloads/TSPLIB/gr-n24-k4.vrp"; sourceTree = "<group>"; };
+		04DAA646248E874C00E07545 /* ulysses-n16-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "ulysses-n16-k3.vrp"; path = "../../../Downloads/TSPLIB/ulysses-n16-k3.vrp"; sourceTree = "<group>"; };
+		04DAA647248E874C00E07545 /* fri-n26-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "fri-n26-k3.vrp"; path = "../../../Downloads/TSPLIB/fri-n26-k3.vrp"; sourceTree = "<group>"; };
+		04DAA648248E874C00E07545 /* dantzig-n42-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "dantzig-n42-k4.vrp"; path = "../../../Downloads/TSPLIB/dantzig-n42-k4.vrp"; sourceTree = "<group>"; };
+		04DAA649248E874C00E07545 /* gr-n17-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "gr-n17-k3.vrp"; path = "../../../Downloads/TSPLIB/gr-n17-k3.vrp"; sourceTree = "<group>"; };
+		04DAA658248E877100E07545 /* att-n48-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "att-n48-k4.vrp"; sourceTree = "<group>"; };
+		04DAA659248E877A00E07545 /* bayg-n29-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "bayg-n29-k4.vrp"; sourceTree = "<group>"; };
+		04DAA65A248E879200E07545 /* bays-n29-k5.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "bays-n29-k5.vrp"; sourceTree = "<group>"; };
+		04DAA65B248E879E00E07545 /* dantzig-n42-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "dantzig-n42-k4.vrp"; sourceTree = "<group>"; };
+		04DAA65C248E87A700E07545 /* fri-n26-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "fri-n26-k3.vrp"; sourceTree = "<group>"; };
+		04DAA65D248E87AF00E07545 /* gr-n17-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "gr-n17-k3.vrp"; sourceTree = "<group>"; };
+		04DAA65E248E87B700E07545 /* gr-n21-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "gr-n21-k3.vrp"; sourceTree = "<group>"; };
+		04DAA65F248E87BE00E07545 /* gr-n24-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "gr-n24-k4.vrp"; sourceTree = "<group>"; };
+		04DAA660248E87C400E07545 /* gr-n48-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "gr-n48-k3.vrp"; sourceTree = "<group>"; };
+		04DAA661248E87CA00E07545 /* hk-n48-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "hk-n48-k4.vrp"; sourceTree = "<group>"; };
+		04DAA662248E87D400E07545 /* swiss-n42-k5.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "swiss-n42-k5.vrp"; sourceTree = "<group>"; };
+		04DAA663248E87DC00E07545 /* ulysses-n16-k3.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ulysses-n16-k3.vrp"; sourceTree = "<group>"; };
+		04DAA664248E87E500E07545 /* ulysses-n22-k4.vrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ulysses-n22-k4.vrp"; sourceTree = "<group>"; };
 		04F969F12473126800CF3B68 /* result.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = result.txt; path = ../../result.txt; sourceTree = "<group>"; };
 		04F969F32473147700CF3B68 /* result.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = result.txt; sourceTree = "<group>"; };
 		04F969F42473172300CF3B68 /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -128,6 +180,7 @@
 		0427E0F12488F40500A8C19E /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				04DAA657248E876500E07545 /* CVRP */,
 				0427E0F22489179300A8C19E /* E-n23-k3.evrp */,
 				04A5E78924715CB7007B73DB /* E-n101-k8.evrp */,
 				04F969F72473190B00CF3B68 /* E-n76-k7.evrp */,
@@ -142,6 +195,19 @@
 		045C0EFB246D579C00CFBBEA = {
 			isa = PBXGroup;
 			children = (
+				04DAA644248E874B00E07545 /* att-n48-k4.vrp */,
+				04DAA63D248E874A00E07545 /* bayg-n29-k4.vrp */,
+				04DAA63F248E874B00E07545 /* bays-n29-k5.vrp */,
+				04DAA648248E874C00E07545 /* dantzig-n42-k4.vrp */,
+				04DAA647248E874C00E07545 /* fri-n26-k3.vrp */,
+				04DAA649248E874C00E07545 /* gr-n17-k3.vrp */,
+				04DAA641248E874B00E07545 /* gr-n21-k3.vrp */,
+				04DAA645248E874C00E07545 /* gr-n24-k4.vrp */,
+				04DAA643248E874B00E07545 /* gr-n48-k3.vrp */,
+				04DAA642248E874B00E07545 /* hk-n48-k4.vrp */,
+				04DAA63E248E874B00E07545 /* swiss-n42-k5.vrp */,
+				04DAA646248E874C00E07545 /* ulysses-n16-k3.vrp */,
+				04DAA640248E874B00E07545 /* ulysses-n22-k4.vrp */,
 				04F969F12473126800CF3B68 /* result.txt */,
 				04A5E78724715CA3007B73DB /* E-n76-k7.evrp */,
 				04A5E78524715C8A007B73DB /* E-n51-k5.evrp */,
@@ -179,6 +245,26 @@
 				0465D182247BD41B006CE739 /* Move.hpp */,
 			);
 			path = EVRP_STD;
+			sourceTree = "<group>";
+		};
+		04DAA657248E876500E07545 /* CVRP */ = {
+			isa = PBXGroup;
+			children = (
+				04DAA659248E877A00E07545 /* bayg-n29-k4.vrp */,
+				04DAA65B248E879E00E07545 /* dantzig-n42-k4.vrp */,
+				04DAA660248E87C400E07545 /* gr-n48-k3.vrp */,
+				04DAA664248E87E500E07545 /* ulysses-n22-k4.vrp */,
+				04DAA661248E87CA00E07545 /* hk-n48-k4.vrp */,
+				04DAA663248E87DC00E07545 /* ulysses-n16-k3.vrp */,
+				04DAA662248E87D400E07545 /* swiss-n42-k5.vrp */,
+				04DAA65F248E87BE00E07545 /* gr-n24-k4.vrp */,
+				04DAA65E248E87B700E07545 /* gr-n21-k3.vrp */,
+				04DAA65C248E87A700E07545 /* fri-n26-k3.vrp */,
+				04DAA65D248E87AF00E07545 /* gr-n17-k3.vrp */,
+				04DAA65A248E879200E07545 /* bays-n29-k5.vrp */,
+				04DAA658248E877100E07545 /* att-n48-k4.vrp */,
+			);
+			path = CVRP;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
