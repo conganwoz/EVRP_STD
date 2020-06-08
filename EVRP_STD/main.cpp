@@ -829,7 +829,7 @@ int main(int argc, const char * argv[]) {
     fp = fopen("./Result/Local_optimal.txt", "a");
     int loop = 250;
     srand((unsigned)time(NULL));
-    read_file((char *)"./Data/E-n101-k8.evrp");
+    read_file((char *)"./Data/E-n22-k4.evrp");
     
     
     //fprintf(fp, "\n============================================================================\n");
@@ -837,7 +837,7 @@ int main(int argc, const char * argv[]) {
     fprintf(fp, "\n--------------------------------------------------------------------------------\n");
     
     
-    for(int IT = 0; IT < 2; IT++)
+    for(int IT = 0; IT < 5; IT++)
     {
         
         
@@ -858,9 +858,7 @@ int main(int argc, const char * argv[]) {
                 not_improve = 0;
                 mutation();
             } else
-            {
                 cross_over();
-            }
             compute_meta_data();
             inspect_sol(Solutions[0], i);
             if(Solutions[0].is_feasible && Solutions[0].cost < Best_Cost)
