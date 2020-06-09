@@ -871,6 +871,10 @@ void read_baygn29k4(char *file_src)
 
 void Tabu_search_Test()
 {
+    FILE *fp;
+    fp = fopen("./Result/tabu_search_baygn_29_k4.txt", "a");
+    
+    
     Solution sol;
     sol.init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
     sol.is_feasible = true;
@@ -903,6 +907,15 @@ void Tabu_search_Test()
     printf("\n");
     for(int i = 0; i < DIMENTION + NUM_VEHICLES; i++)
         printf("%d -> ", sol.seq_node[i]);
+    
+     fprintf(fp, "\nis_feasible: %d - cost: %lf - over_cap: %lf - Fitness: %lf\n", sol.is_feasible, sol.cost, sol.over_capacity, sol.fitness);
+    for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES; s++)
+        fprintf(fp, "%d -> ", sol.seq_node[s]);
+     fprintf(fp, "\n");
+    for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES;s++)
+        fprintf(fp, "%d -> ", sol.is_though_stat[s]);
+    fclose(fp);
+    
 }
 
 int main(int argc, const char * argv[]) {

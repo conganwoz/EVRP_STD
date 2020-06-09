@@ -104,6 +104,8 @@
 		0465D17F247BC8A7006CE739 /* Customer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Customer.hpp; sourceTree = "<group>"; };
 		0465D181247BD41B006CE739 /* Move.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Move.cpp; sourceTree = "<group>"; };
 		0465D182247BD41B006CE739 /* Move.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Move.hpp; sourceTree = "<group>"; };
+		046E0605248F4F4200B75911 /* CVRP_TABU.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CVRP_TABU.txt; sourceTree = "<group>"; };
+		046E060B248FE05C00B75911 /* tabu_search_baygn_29_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_baygn_29_k4.txt; sourceTree = "<group>"; };
 		04A5E77D24715B73007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E77F24715C20007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E78124715C54007B73DB /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n30-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -173,6 +175,8 @@
 				0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */,
 				0427E0F5248CECFE00A8C19E /* Tabu_optimal.txt */,
 				0427E0F6248CED1400A8C19E /* Local_optimal.txt */,
+				046E0605248F4F4200B75911 /* CVRP_TABU.txt */,
+				046E060B248FE05C00B75911 /* tabu_search_baygn_29_k4.txt */,
 			);
 			path = Result;
 			sourceTree = "<group>";

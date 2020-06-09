@@ -3309,7 +3309,7 @@ void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, 
     
     double finess_Zt = init_finess;
     FIT_BEST = init_finess;
-    for(int it = 0; it < 200; it++)
+    for(int it = 0; it < 100; it++)
     {
         Move best_move = CallEvaluate_cvrp(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA_TABU, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
         if(best_move.cus_1 != -1)
