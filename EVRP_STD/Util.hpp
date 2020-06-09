@@ -18,6 +18,7 @@ public:
     int Best_Tabu_Search[200];
     bool FOUND_NEW_BEST = false;
     double FIT_BEST = 0.0;
+    double ALPHA_TABU = 1.0;
     int tabu[200][200];
     double compute_H_value(Solution *Sols, int num_sols);
     double compute_AVG_q(Solution *Sols, int num_sols);
@@ -72,6 +73,10 @@ public:
     void Tabu_search(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
     Move CallEvaluate(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
     bool validate_through_stat(int *seq, int begin, int num_c, int num_v, double max_eng, double eng_consum, double **Distances, int **Best_Stat, double **Best_Stat_Distances, int idx_j, int idx_i, int node_j, int node_i);
+    
+    Move CallEvaluate_cvrp(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double ** Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances, int IT);
+    
+    void Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);
     
     // OPTIMAL
     void Two_Exchange(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double ** Best_Stat_Distances);

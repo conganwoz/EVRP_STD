@@ -519,6 +519,7 @@ void Solution::reset_in_select(bool *list)
 
 void Solution::Potvin_init_test(int *list_seeds, double **Distances, double *Demands, double max_cap)
 {
+    printf("\n NUM_CUSTOMER: %d - NUM_VEHICLE: %d", num_c, num_v);
     // route data
     int Routes[num_v][num_c];
     double curr_cost[num_v];

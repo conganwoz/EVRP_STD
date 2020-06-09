@@ -346,14 +346,11 @@ int compare_customer_distances(const void *ptr1, const void *ptr2)
 void find_nearest_cus() {
     for(int i = 1; i < NUM_CUSTOMERS; i++)
     {
-        double x = Coords[i][0];
-        double y = Coords[i][1];
         // compute temp distance
         for(int j = 0; j < NUM_CUSTOMERS; j++)
         {
-            double x1 = List_Customers[j].x;
-            double y1 = List_Customers[j].y;
-            List_Customers[j].temp_distance = sqrt((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y));
+            List_Customers[j].temp_distance = Distances[j][i];
+            List_Customers[j].id = j;
         }
         // sort list customers
         qsort(List_Customers, NUM_CUSTOMERS, sizeof(Customer), compare_customer_distances);
@@ -363,19 +360,9 @@ void find_nearest_cus() {
         {
             index++;
             if(List_Customers[index].id == i || List_Customers[index].id == 0) index++;
-            if(List_Customers[index].id == i || List_Customers[index].id == 0) index++;
             List_Nearest_Cus[i][k] = List_Customers[index].id;
         }
     }
-    
-//    for(int i = 1; i < NUM_CUSTOMERS; i++)
-//    {
-//        printf("\ncus: %d\n", i);
-//        for(int j = 0; j < 10; j++)
-//        {
-//            printf("%d -> ", List_Nearest_Cus[i][j]);
-//        }
-//    }
 }
 
 void prepare_data()
@@ -853,9 +840,9 @@ void read_baygn29k4(char *file_src)
     fscanf(infile, "%d\n", &NUM_VEHICLES);
     fscanf(infile, "%d\n", &DIMENTION);
     fscanf(infile, "%lf\n", &MAX_CAPACITY_VH);
-    NUM_CUSTOMERS = DIMENTION - 1;
+    NUM_CUSTOMERS = DIMENTION;
     
-    printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES);
+    printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d - num_customer: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES, NUM_CUSTOMERS);
     
     create_space_mem();
     
@@ -870,11 +857,57 @@ void read_baygn29k4(char *file_src)
             Distances[i][i] = 0.0;
         }
     }
+    double index;
+    double demand = 0.0;
+    for(i = 0; i < DIMENTION; i++)
+    {
+        fscanf(infile, "%lf %lf\n", &index, &demand);
+        Demands[i] = demand;
+    }
     
+    find_nearest_cus();
+    fclose(infile);
+}
+
+void Tabu_search_Test()
+{
+    Solution sol;
+    sol.init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
+    sol.is_feasible = true;
+    random_select_seeds();
+    //find_farthest_seed();
     
+    sol.Potvin_init_test(list_rand_seeds, Distances, Demands, MAX_CAPACITY_VH);
+    for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES; s++)
+        sol.is_though_stat[s]= false;
+    sol.compute_cost(Distances, Best_Station_Distances);
+    sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
+    if(sol.over_capacity > 0.0) sol.is_feasible = false;
+    sol.fitness = sol.cost + sol.over_capacity;
+    
+    inspect_sol(sol, 1);
+    printf("\n BEGIN ROUTE: ");
+    for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES; s++)
+        printf("%d -> ", sol.seq_node[s]);
+    
+    U.Tabu_search_cvrp(sol.seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, sol.fitness, List_Nearest_Cus, sol.cost, MAX_CAPACITY_VH, 1.0, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+    
+    sol.is_feasible = true;
+    sol.compute_cost(Distances, Best_Station_Distances);
+    sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
+    if(sol.over_capacity > 0.0) sol.is_feasible = false;
+    sol.fitness = sol.cost + sol.over_capacity;
+    
+    inspect_sol(sol, 1);
+    
+    printf("\n");
+    for(int i = 0; i < DIMENTION + NUM_VEHICLES; i++)
+        printf("%d -> ", sol.seq_node[i]);
 }
 
 int main(int argc, const char * argv[]) {
+    srand((unsigned)time(NULL));
     read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
+    Tabu_search_Test();
     return 0;
 }
