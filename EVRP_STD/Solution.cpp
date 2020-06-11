@@ -782,7 +782,7 @@ double Solution::compute_over_cap(double *Demands, double max_capacity_vh)
         
     }
     
-    return sum_capacity_over;
+    return -sum_capacity_over;
 }
 
 void Solution::copy_seq_node(Solution c2)

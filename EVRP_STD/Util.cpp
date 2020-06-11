@@ -3291,7 +3291,17 @@ bool check_move_feasible(double *Demands, double max_capacity_vh, int num_c, int
 
 void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, double *Demands, double init_finess, int **List_Nearest_Cus, double init_cost, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances)
 {
-    int tabu_num = (int)((num_c + num_v)*0.1);
+    printf("\ntabu_data: max_cap: %lf - num_c: %d - num_v: %d\n", max_cap, num_c, num_v);
+    int tabu_num = (int)((num_c + num_v)*0.15);
+    
+//    int min_tabu = (int)((num_c + num_v)*0.1);
+//    int max_tabu = (int)((num_c + num_v)*0.15);
+//    int tabu_num = Rand(min_tabu, max_tabu);
+    //int tabu_num = (int)(ran)
+    int loop = 300;
+    double best_fitness = 100000.0;
+    double best_cost = 1000000.0;
+    int index_best_tabu = 0;
     // reset tabu counter
     for(int i = 0; i < num_c; i++)
     {
@@ -3308,10 +3318,12 @@ void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, 
     }
     
     double finess_Zt = init_finess;
+    double cost_Zt = init_cost;
     FIT_BEST = init_finess;
-    for(int it = 0; it < 100; it++)
+    for(int it = 0; it < loop; it++)
     {
         Move best_move = CallEvaluate_cvrp(seq, finess_Zt, num_c, num_v, List_Nearest_Cus, init_cost, Distances, Demands, max_cap, ALPHA_TABU, max_eng, eng_consum, Best_Stat, Best_Stat_Distances, it);
+        printf("\nALPHA TABU: %lf\n", ALPHA_TABU);
         if(best_move.cus_1 != -1)
         {
             int i = best_move.cus_1;
@@ -3320,24 +3332,54 @@ void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, 
             tabu[j][i]= it + tabu_num;
             
             finess_Zt = finess_Zt + best_move.varFitness;
+            cost_Zt = cost_Zt + best_move.varCost;
             // create new route
             update_seq(seq, i, j, num_c + num_v);
             if(FOUND_NEW_BEST) {
-                if(check_move_feasible(Demands, max_cap, num_c, num_v, seq))
+                if(check_move_feasible(Demands, max_cap, num_c, num_v, seq) && cost_Zt < best_cost)
                 {
+                    printf("\n Best_found_route: Cost: %lf", cost_Zt);
                     for(int s = 0; s < num_c + num_v; s++)
                     {
                         Best_Tabu_Search[s] = seq[s];
+                        printf("%d -> ", seq[s]);
                     }
+                    
+                    best_cost = cost_Zt;
+                    best_fitness = finess_Zt;
+                    index_best_tabu = it;
                 }
             }
         }
+        
+        if(!check_move_feasible(Demands, max_cap, num_c, num_v, seq) || best_move.cus_1 == -1)
+        {
+            if(ALPHA_TABU == 0.0)
+            {
+                ALPHA_TABU = 1.1;
+            }
+            else
+            {
+                ALPHA_TABU = ALPHA_TABU * (1.5);
+            }
+        } else if(check_move_feasible(Demands, max_cap, num_c, num_v, seq))
+        {
+            ALPHA_TABU = ALPHA_TABU / (1.1);
+        }
+        
+        
     }
     // update best search
     for(int i = 0; i < num_c + num_v; i++)
     {
         seq[i] = Best_Tabu_Search[i];
     }
+    
+    FILE* fp;
+    fp = fopen("./Result/tabu_search_fri_n26_k3.txt", "a");
+    fprintf(fp, "\n================================================================\n");
+    fprintf(fp, "\nLoop: %d - Num_Tabu: %d - Best_fitness: %lf - index: %d\n",loop, tabu_num, best_fitness, index_best_tabu);
+    fclose(fp);
 }
 
 Move Util::CallEvaluate_cvrp(int *seq, double fitness_Zt, int num_c, int num_v, int **List_Nearest_Cus, double init_cost, double **Distances, double *Demands, double max_cap, double ALPHA, double max_eng, double eng_consum, int **Best_Stat, double **Best_Stat_Distances, int IT)
@@ -3483,12 +3525,21 @@ Move Util::CallEvaluate_cvrp(int *seq, double fitness_Zt, int num_c, int num_v, 
             }
         }
     }
-    if(!best_move.feasible || best_move.cus_1 == -1)
-    {
-        ALPHA_TABU = ALPHA_TABU * (1.5);
-    } else if(best_move.feasible)
-    {
-        ALPHA_TABU = ALPHA_TABU / (1.5);
-    }
+//    if(!check_move_feasible(Demands, max_cap, num_c, num_v, seq) || best_move.cus_1 == -1)
+//    {
+//        if(ALPHA_TABU == 0.0)
+//        {
+//            ALPHA_TABU = 1.1;
+//        }
+//        else
+//        {
+//            ALPHA_TABU = ALPHA_TABU * (1.5);
+//        }
+//        printf("\nFEASIBLE: False\n");
+//    } else if(best_move.feasible)
+//    {
+//        ALPHA_TABU = ALPHA_TABU / (1.1);
+//        printf("\nFEASIBLE: True\n");
+//    }
     return best_move;
 }

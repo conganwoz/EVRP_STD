@@ -106,6 +106,16 @@
 		0465D182247BD41B006CE739 /* Move.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Move.hpp; sourceTree = "<group>"; };
 		046E0605248F4F4200B75911 /* CVRP_TABU.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CVRP_TABU.txt; sourceTree = "<group>"; };
 		046E060B248FE05C00B75911 /* tabu_search_baygn_29_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_baygn_29_k4.txt; sourceTree = "<group>"; };
+		046E060C248FF47600B75911 /* tabu_search_bayn_29_k5.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_bayn_29_k5.txt; sourceTree = "<group>"; };
+		046E060D2490BDD100B75911 /* tabu_search_dantzign42_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_dantzign42_k4.txt; sourceTree = "<group>"; };
+		046E060E2490CC2B00B75911 /* tabu_search_gr_n48_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n48_k3.txt; sourceTree = "<group>"; };
+		046E060F2490D5DC00B75911 /* tabu_search_ulysses_n22_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_ulysses_n22_k4.txt; sourceTree = "<group>"; };
+		046E06102490F15300B75911 /* tabu_search_hk_n48_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_hk_n48_k4.txt; sourceTree = "<group>"; };
+		046E06112490F8A100B75911 /* tabu_search_swiss_n42_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_swiss_n42_k4.txt; sourceTree = "<group>"; };
+		046E06122490FFE400B75911 /* tabu_search_gr_n24_k4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n24_k4.txt; sourceTree = "<group>"; };
+		046E0613249131D400B75911 /* tabu_search_gr_n21_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n21_k3.txt; sourceTree = "<group>"; };
+		046E06142491357800B75911 /* tabu_search_gr_n17_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n17_k3.txt; sourceTree = "<group>"; };
+		046E06152492333700B75911 /* tabu_search_fri_n26_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_fri_n26_k3.txt; sourceTree = "<group>"; };
 		04A5E77D24715B73007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E77F24715C20007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E78124715C54007B73DB /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n30-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -177,6 +187,16 @@
 				0427E0F6248CED1400A8C19E /* Local_optimal.txt */,
 				046E0605248F4F4200B75911 /* CVRP_TABU.txt */,
 				046E060B248FE05C00B75911 /* tabu_search_baygn_29_k4.txt */,
+				046E060C248FF47600B75911 /* tabu_search_bayn_29_k5.txt */,
+				046E060D2490BDD100B75911 /* tabu_search_dantzign42_k4.txt */,
+				046E060E2490CC2B00B75911 /* tabu_search_gr_n48_k3.txt */,
+				046E060F2490D5DC00B75911 /* tabu_search_ulysses_n22_k4.txt */,
+				046E06102490F15300B75911 /* tabu_search_hk_n48_k4.txt */,
+				046E06112490F8A100B75911 /* tabu_search_swiss_n42_k4.txt */,
+				046E06122490FFE400B75911 /* tabu_search_gr_n24_k4.txt */,
+				046E0613249131D400B75911 /* tabu_search_gr_n21_k3.txt */,
+				046E06142491357800B75911 /* tabu_search_gr_n17_k3.txt */,
+				046E06152492333700B75911 /* tabu_search_fri_n26_k3.txt */,
 			);
 			path = Result;
 			sourceTree = "<group>";

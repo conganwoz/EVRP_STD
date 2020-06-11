@@ -1,12 +1,7 @@
-NAME : dantzig42
-TYPE : CVRP
-COMMENT : 42 cities (Dantzig), No of trucks: 4, Optimal value: 1142
-DIMENSION : 42
-EDGE_WEIGHT_TYPE : EXPLICIT
-EDGE_WEIGHT_FORMAT : LOWER_DIAG_ROW 
-DISPLAY_DATA_TYPE : TWOD_DISPLAY
-CAPACITY: 11
-EDGE_WEIGHT_SECTION
+1142
+4
+42
+11
    0   
    8   0  
   39  45  0  
@@ -75,51 +70,7 @@ EDGE_WEIGHT_SECTION
   32  25   0   
    5  12  55  41  53  64  61  61  66  84 111 113 150 186 192 166 147 180 188 
  167 140 124 119  90  87  90  94 107 114  77  86  92  98  80  74  77  60  48  
-  38  32   6   0                                                           
-DISPLAY_DATA_SECTION
-   1   170  85
-   2   166  88
-   3   133  73
-   4   140  70
-   5   142  55
-   6   126  53
-   7   125  60
-   8   119  68
-   9   117  74
-  10    99  83
-  11    73  79
-  12    72  91
-  13    37  94
-  14     6 106
-  15     3  97
-  16    21  82
-  17    33  67
-  18     4  66
-  19     3  42
-  20    27  33
-  21    52  41
-  22    57  59
-  23    58  66
-  24    88  65
-  25    99  67
-  26    95  55
-  27    89  55
-  28    83  38
-  29    85  25
-  30   104  35
-  31   112  37
-  32   112  24
-  33   113  13
-  34   125  30
-  35   135  32
-  36   147  18
-  37   147  36
-  38   154  45
-  39   157  54
-  40   158  61
-  41   172  82
-  42   174  87
-DEMAND_SECTION
+  38  32   6   0
 1 0
 2 1
 3 1
@@ -162,10 +113,6 @@ DEMAND_SECTION
 40 1
 41 1
 42 1
-DEPOT_SECTION
- 1
- -1
-EOF
 
 
 

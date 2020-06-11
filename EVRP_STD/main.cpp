@@ -130,7 +130,6 @@ void create_space_mem()
     list_farthest_seeds = (int *)malloc(NUM_VEHICLES * sizeof(int));
     list_nearest_seeds = (int *)malloc(NUM_VEHICLES * sizeof(int));
     list_rand_seeds = (int *)malloc(NUM_VEHICLES * sizeof(int));
-    
 }
 
 void read_file(char *file_src)
@@ -869,10 +868,190 @@ void read_baygn29k4(char *file_src)
     fclose(infile);
 }
 
+void read_baysn29k5(char *file_src)
+{
+    int i, j;
+    FILE *infile;
+    infile = fopen(file_src, "r");
+    if(infile == NULL)
+    {
+        printf("READ FILE ERROR\n");
+        exit(-1);
+    }
+    else
+    {
+        printf("READ FILE SUCCESS\n");
+    }
+    
+    fscanf(infile, "%lf\n", &OPTIMAL_VALUE);
+    fscanf(infile, "%d\n", &NUM_VEHICLES);
+    fscanf(infile, "%d\n", &DIMENTION);
+    fscanf(infile, "%lf\n", &MAX_CAPACITY_VH);
+    NUM_CUSTOMERS = DIMENTION;
+    
+    printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d - num_customer: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES, NUM_CUSTOMERS);
+    
+    create_space_mem();
+    
+    double weight = 0.0;
+    for(i = 0; i < DIMENTION; i++)
+    {
+        for(j = 0; j < DIMENTION; j++)
+        {
+            fscanf(infile,"%lf",&weight);
+            Distances[i][j] = weight;
+        }
+    }
+    
+    double index;
+    double demand = 0.0;
+    for(i = 0; i < DIMENTION; i++)
+    {
+        fscanf(infile, "%lf %lf\n", &index, &demand);
+        Demands[i] = demand;
+    }
+    
+    find_nearest_cus();
+    fclose(infile);
+}
+
+void read_dantzign42k4(char *file_src)
+{
+    int i, j;
+    FILE *infile;
+    infile = fopen(file_src, "r");
+    if(infile == NULL)
+    {
+        printf("READ FILE ERROR\n");
+        exit(-1);
+    }
+    else
+    {
+        printf("READ FILE SUCCESS\n");
+    }
+    
+    fscanf(infile, "%lf\n", &OPTIMAL_VALUE);
+    fscanf(infile, "%d\n", &NUM_VEHICLES);
+    fscanf(infile, "%d\n", &DIMENTION);
+    fscanf(infile, "%lf\n", &MAX_CAPACITY_VH);
+    NUM_CUSTOMERS = DIMENTION;
+    
+    printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d - num_customer: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES, NUM_CUSTOMERS);
+    
+    create_space_mem();
+    double weight = 0.0;
+    for(i = 0; i < DIMENTION; i++)
+        for(j = 0; j <= i; j++)
+        {
+            fscanf(infile, "%lf", &weight);
+            Distances[i][j] = weight;
+            Distances[j][i] = weight;
+        }
+    
+    double index;
+    double demand = 0.0;
+    for(i = 0; i < DIMENTION; i++)
+    {
+        fscanf(infile, "%lf %lf\n", &index, &demand);
+        Demands[i] = demand;
+    }
+    
+    find_nearest_cus();
+    fclose(infile);
+}
+
+void read_gr_n48_k3(char *file_src)
+{
+    read_dantzign42k4(file_src);
+}
+
+void read_hk_n48_k4(char *file_src)
+{
+    read_dantzign42k4(file_src);
+}
+
+void read_swiss_n42_k5(char *file_src)
+{
+    read_baysn29k5(file_src);
+}
+
+void read_ulysses_n22_k4(char *file_src)
+{
+    int i, j;
+    FILE *infile;
+    infile = fopen(file_src, "r");
+    if(infile == NULL)
+    {
+        printf("READ FILE ERROR\n");
+        exit(-1);
+    }
+    else
+    {
+        printf("READ FILE SUCCESS\n");
+    }
+    
+    fscanf(infile, "%lf\n", &OPTIMAL_VALUE);
+    fscanf(infile, "%d\n", &NUM_VEHICLES);
+    fscanf(infile, "%d\n", &DIMENTION);
+    fscanf(infile, "%lf\n", &MAX_CAPACITY_VH);
+    NUM_CUSTOMERS = DIMENTION;
+    printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d - num_customer: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES, NUM_CUSTOMERS);
+    
+    create_space_mem();
+    double index, x, y;
+    double demand = 0.0;
+    for(i = 0; i < NUM_CUSTOMERS; i++)
+    {
+        fscanf(infile, "%lf %lf %lf\n", &index, &x, &y);
+        Coords[i][0] = x;
+        Coords[i][1] = y;
+    }
+    
+    for(i = 0; i < NUM_CUSTOMERS; i++)
+    {
+        fscanf(infile, "%lf %lf\n", &index, &demand);
+        Demands[i] = demand;
+    }
+    
+    // prepare_data
+    for(i = 0; i < DIMENTION; i++)
+    {
+        for(j = i + 1; j < DIMENTION; j++)
+        {
+            double distance = sqrt((Coords[i][0] - Coords[j][0]) * (Coords[i][0] - Coords[j][0]) + (Coords[i][1] - Coords[j][1]) * (Coords[i][1] - Coords[j][1]));
+            Distances[i][j] = distance;
+            Distances[j][i] = distance;
+            Distances[i][i] = 0.0;
+        }
+    }
+    fclose(infile);
+    printf("\n");
+}
+
+void read_gr_n24_k4(char * file_name)
+{
+    read_dantzign42k4(file_name);
+}
+
+void read_gr_n21_k3(char * file_name)
+{
+    read_dantzign42k4(file_name);
+}
+
+void read_gr_17_k3(char * file_name)
+{
+    read_dantzign42k4(file_name);
+}
+
+void read_fri_n26_k3(char* file_name)
+{
+    read_dantzign42k4(file_name);
+}
+
 void Tabu_search_Test()
 {
     FILE *fp;
-    fp = fopen("./Result/tabu_search_baygn_29_k4.txt", "a");
+    fp = fopen("./Result/tabu_search_fri_n26_k3.txt", "a");
     
     
     Solution sol;
@@ -898,7 +1077,9 @@ void Tabu_search_Test()
     
     sol.is_feasible = true;
     sol.compute_cost(Distances, Best_Station_Distances);
-    sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
+    for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES; s++)
+        fprintf(fp, "%d -> ", sol.seq_node[s]);
+    sol.over_capacity = sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
     if(sol.over_capacity > 0.0) sol.is_feasible = false;
     sol.fitness = sol.cost + sol.over_capacity;
     
@@ -915,12 +1096,27 @@ void Tabu_search_Test()
     for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES;s++)
         fprintf(fp, "%d -> ", sol.is_though_stat[s]);
     fclose(fp);
-    
 }
 
 int main(int argc, const char * argv[]) {
     srand((unsigned)time(NULL));
-    read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
-    Tabu_search_Test();
+    for(int i = 0; i < 10; i++)
+    {
+        //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
+        //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
+        //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
+        //read_gr_n48_k3((char*)"./Data/CVRP/gr-n48-k3.vrp");
+        //read_ulysses_n22_k4((char*)"./Data/CVRP/ulysses-n22-k4.vrp");
+        //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
+        //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
+        //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
+        //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
+        read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
+        for(int i = 0; i < DIMENTION; i++)
+            for(int j = 0; j < DIMENTION; j++)
+                printf("\n(%d, %d) = %lf", i, j,Distances[i][j]);
+        Tabu_search_Test();
+    }
+    
     return 0;
 }
