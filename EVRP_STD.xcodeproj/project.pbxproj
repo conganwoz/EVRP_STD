@@ -92,6 +92,7 @@
 		0427E0F3248B2F5D00A8C19E /* GA_Tabu_search.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_search.txt; sourceTree = "<group>"; };
 		0427E0F5248CECFE00A8C19E /* Tabu_optimal.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tabu_optimal.txt; sourceTree = "<group>"; };
 		0427E0F6248CED1400A8C19E /* Local_optimal.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Local_optimal.txt; sourceTree = "<group>"; };
+		042898E82495B56500B34CE4 /* GA_Tabu_Search_CVRP.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_Tabu_Search_CVRP.txt; sourceTree = "<group>"; };
 		04505471246EEB3F001C02B0 /* Util.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
 		04505472246EEB3F001C02B0 /* Util.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
 		045C0F04246D579C00CFBBEA /* EVRP_STD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EVRP_STD; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +200,7 @@
 				046E06142491357800B75911 /* tabu_search_gr_n17_k3.txt */,
 				046E06152492333700B75911 /* tabu_search_fri_n26_k3.txt */,
 				0498704E2492944D00CE815D /* GA_CVRP.txt */,
+				042898E82495B56500B34CE4 /* GA_Tabu_Search_CVRP.txt */,
 			);
 			path = Result;
 			sourceTree = "<group>";

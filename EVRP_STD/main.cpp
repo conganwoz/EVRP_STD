@@ -358,8 +358,14 @@ void find_nearest_cus() {
         for(int k = 0; k < 10; k++)
         {
             index++;
-            if(List_Customers[index].id == i || List_Customers[index].id == 0) index++;
-            List_Nearest_Cus[i][k] = List_Customers[index].id;
+            if(List_Customers[index].id == i || List_Customers[index].id == 0)
+            {
+                //index++;
+                k--;
+            } else
+            {
+                List_Nearest_Cus[i][k] = List_Customers[index].id;
+            }
         }
     }
 }
@@ -684,6 +690,8 @@ void cross_over(){
             
             //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
+            U.Tabu_search_cvrp(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
             //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
@@ -698,6 +706,8 @@ void cross_over(){
             
             
             //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
+            U.Tabu_search_cvrp(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
@@ -717,6 +727,8 @@ void cross_over(){
             
             //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
+            U.Tabu_search_cvrp(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
             //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
@@ -732,6 +744,8 @@ void cross_over(){
             
             
             //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            
+            U.Tabu_search_cvrp(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
             //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
@@ -1126,7 +1140,7 @@ int main(int argc, const char * argv[]) {
 
     
     FILE *fp;
-    fp = fopen("./Result/GA_CVRP.txt", "a");
+    fp = fopen("./Result/GA_Tabu_Search_CVRP.txt", "a");
     int loop = 100;
     //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
     //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
