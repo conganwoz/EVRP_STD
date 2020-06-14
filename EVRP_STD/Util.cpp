@@ -72,6 +72,14 @@ bool Util::check_selected_customer(int *seq_customer, int begin, int end, int va
 
 void Util::Permutation_Order_1(Solution sol1, Solution sol2, int *child, int num_node)
 {
+//    printf("\ninspect permatation order:\n");
+//    printf("Route 1:");
+//    for(int i = 0; i < num_node; i++)
+//        printf("%d -> ", sol1.seq_node[i]);
+//    printf("\nRoute 2:");
+//    for(int i = 0; i < num_node; i++)
+//        printf("%d -> ", sol2.seq_node[i]);
+//    printf("\n");
     int i, begin_rand, end_rand;
     int seq_choosen[num_node];
     for(i = 0; i < num_node; i++)
@@ -133,6 +141,15 @@ void Util::Permutation_Order_1(Solution sol1, Solution sol2, int *child, int num
 
 void Util::Permutation_Order_1_v1(Solution sol1, Solution sol2, int *child, int num_node)
 {
+//    printf("\ninspect permatation order:\n");
+//    printf("Route 1:");
+//    for(int i = 0; i < num_node; i++)
+//        printf("%d -> ", sol1.seq_node[i]);
+//    printf("\nRoute 2:");
+//    for(int i = 0; i < num_node; i++)
+//        printf("%d -> ", sol2.seq_node[i]);
+//    printf("\n");
+    
     int i, begin_rand, end_rand;
     int seq_choosen[num_node];
     for(i = 0; i < num_node; i++)

@@ -116,6 +116,7 @@
 		046E0613249131D400B75911 /* tabu_search_gr_n21_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n21_k3.txt; sourceTree = "<group>"; };
 		046E06142491357800B75911 /* tabu_search_gr_n17_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_gr_n17_k3.txt; sourceTree = "<group>"; };
 		046E06152492333700B75911 /* tabu_search_fri_n26_k3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tabu_search_fri_n26_k3.txt; sourceTree = "<group>"; };
+		0498704E2492944D00CE815D /* GA_CVRP.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GA_CVRP.txt; sourceTree = "<group>"; };
 		04A5E77D24715B73007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E77F24715C20007B73DB /* E-n23-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n23-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n23-k3.evrp"; sourceTree = "<group>"; };
 		04A5E78124715C54007B73DB /* E-n30-k3.evrp */ = {isa = PBXFileReference; lastKnownFileType = text; name = "E-n30-k3.evrp"; path = "../../DA_TOT_NGHIEP/GA_EVRP/E-n30-k3.evrp"; sourceTree = "<group>"; };
@@ -197,6 +198,7 @@
 				046E0613249131D400B75911 /* tabu_search_gr_n21_k3.txt */,
 				046E06142491357800B75911 /* tabu_search_gr_n17_k3.txt */,
 				046E06152492333700B75911 /* tabu_search_fri_n26_k3.txt */,
+				0498704E2492944D00CE815D /* GA_CVRP.txt */,
 			);
 			path = Result;
 			sourceTree = "<group>";

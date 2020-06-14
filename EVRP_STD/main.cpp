@@ -320,7 +320,7 @@ void mutation()
     for(int i = 0; i < num_node; i++)
         new_sol.seq_node[i] = seq[i];
     
-    new_sol.is_feasible = U.find_through_station(new_sol.seq_node, new_sol.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+    //new_sol.is_feasible = U.find_through_station(new_sol.seq_node, new_sol.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
     new_sol.compute_cost(Distances, Best_Station_Distances);
     new_sol.compute_over_cap(Demands, MAX_CAPACITY_VH);
     if(Solutions[parent].over_capacity > 0.0) new_sol.is_feasible = false;
@@ -417,31 +417,14 @@ void random_select_seeds()
 void init_population()
 {
     // random init
-    int i = 0;
-    
-    // init Potvin route with farthest seeds
-    Solutions[i].is_feasible = true;
-    Solutions[i].Potvin_init_test(list_farthest_seeds, Distances, Demands, MAX_CAPACITY_VH);
-    Solutions[i].is_feasible = U.find_through_station(Solutions[i].seq_node, Solutions[i].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
-    Solutions[i].compute_cost(Distances, Best_Station_Distances);
-    Solutions[i].compute_over_cap(Demands, MAX_CAPACITY_VH);
-    if(Solutions[i].over_capacity > 0.0) Solutions[i].is_feasible = false;
-    
-    // init Potvin route with nearest seeds
-    i++;
-    Solutions[i].is_feasible = true;
-    Solutions[i].Potvin_init_test(list_nearest_seeds, Distances, Demands, MAX_CAPACITY_VH);
-    Solutions[i].is_feasible = U.find_through_station(Solutions[i].seq_node, Solutions[i].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
-    Solutions[i].compute_cost(Distances, Best_Station_Distances);
-    Solutions[i].compute_over_cap(Demands, MAX_CAPACITY_VH);
-    if(Solutions[i].over_capacity > 0.0) Solutions[i].is_feasible = false;
-    i++;
-    for(; i < NUM_SOL; i++)
+    int i;
+    for(i = 0; i < NUM_SOL; i++)
     {
         Solutions[i].is_feasible = true;
         random_select_seeds();
         Solutions[i].Potvin_init_test(list_rand_seeds, Distances, Demands, MAX_CAPACITY_VH);
-        Solutions[i].is_feasible = U.find_through_station(Solutions[i].seq_node, Solutions[i].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        for(int s = 0; s < NUM_CUSTOMERS + NUM_VEHICLES; s++)
+            Solutions[i].is_though_stat[s]= false;
         Solutions[i].compute_cost(Distances, Best_Station_Distances);
         Solutions[i].compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Solutions[i].over_capacity > 0.0) Solutions[i].is_feasible = false;
@@ -514,6 +497,8 @@ void build_Roulette_wheel_arr()
     for(i = 1; i < NUM_SOL; i++)
     {
         Roulette_Wheel_Arr[i] = Roulette_Wheel_Arr[i - 1] + Solutions[NUM_SOL - 1 - i].fitness;
+        if(Roulette_Wheel_Arr[i] < 0)
+            Roulette_Wheel_Arr[i] = Roulette_Wheel_Arr[i - 1] + 100.0;
     }
 }
 
@@ -532,14 +517,15 @@ void select_parent_to_pool_distinct()
 {
     reset_in_pool();
     int i, j, m;
-    int total = (int)Roulette_Wheel_Arr[NUM_SOL - 1];
+    int total = (int)Roulette_Wheel_Arr[NUM_SOL - 2];
     
     for(i = 0; i < (int)(NUM_SOL * (0.7)); i++)
     {
         int rand_wheel = (int)(rand() % total);
+        bool found = false;
         for(j = 0; j < NUM_SOL; j++)
         {
-            if(Roulette_Wheel_Arr[j] > rand_wheel)
+            if(Roulette_Wheel_Arr[j] >= rand_wheel)
             {
                 if(Is_In_Pool[j])
                 {
@@ -558,9 +544,24 @@ void select_parent_to_pool_distinct()
                     Parent_Pool[i] = j;
                     Is_In_Pool[j] = true;
                 }
+                found = true;
                 break;
             }
         }
+        
+        if(!found)
+        {
+            for(m = 0; m < NUM_SOL; m++)
+            {
+                if(!Is_In_Pool[m])
+                {
+                    Parent_Pool[i] = m;
+                    Is_In_Pool[m] = true;
+                    break;
+                }
+            }
+        }
+        
     }
 }
 
@@ -576,6 +577,8 @@ void select_best_feasible_sol()
             Solution temp = Solutions[latest_idx];
             Solutions[latest_idx] = Solutions[i];
             Solutions[i] = temp;
+            Solutions[latest_idx].compute_cost(Distances, Best_Station_Distances);
+            Solutions[latest_idx].fitness = Solutions[latest_idx].cost + ALPHA * Solutions[latest_idx].over_capacity;
         }
     }
     qsort(Solutions, latest_idx + 1, sizeof(Solution), compare_sols_cost);
@@ -637,28 +640,28 @@ void cross_over(){
         // compute meta data for 4 childs
         
         //CHILD 1
-        Child1.is_feasible = U.find_through_station(Child1.seq_node, Child1.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        //Child1.is_feasible = U.find_through_station(Child1.seq_node, Child1.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
         Child1.compute_cost(Distances, Best_Station_Distances);
         Child1.compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Child1.over_capacity > 0.0) Child1.is_feasible = false;
         Child1.fitness = Child1.cost + ALPHA * Child1.over_capacity;
         
         // CHILD 2
-        Child2.is_feasible = U.find_through_station(Child2.seq_node, Child2.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        //Child2.is_feasible = U.find_through_station(Child2.seq_node, Child2.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
         Child2.compute_cost(Distances, Best_Station_Distances);
         Child2.compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Child2.over_capacity > 0.0) Child2.is_feasible = false;
         Child2.fitness = Child2.cost + ALPHA * Child2.over_capacity;
         
         // CHILD 3
-        Child3.is_feasible = U.find_through_station(Child3.seq_node, Child3.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        //Child3.is_feasible = U.find_through_station(Child3.seq_node, Child3.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
         Child3.compute_cost(Distances, Best_Station_Distances);
         Child3.compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Child3.over_capacity > 0.0) Child3.is_feasible = false;
         Child3.fitness = Child3.cost + ALPHA * Child3.over_capacity;
         
         // CHILD 4
-        Child4.is_feasible = U.find_through_station(Child4.seq_node, Child4.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        //Child4.is_feasible = U.find_through_station(Child4.seq_node, Child4.is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
         Child4.compute_cost(Distances, Best_Station_Distances);
         Child4.compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Child4.over_capacity > 0.0) Child4.is_feasible = false;
@@ -679,9 +682,9 @@ void cross_over(){
             
             
             
-            U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
-            Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+            //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
@@ -694,9 +697,9 @@ void cross_over(){
             
             
             
-            U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
-            Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+            //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
@@ -712,9 +715,9 @@ void cross_over(){
             
             
             
-            U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
-            Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+            //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
@@ -728,9 +731,9 @@ void cross_over(){
             
             
             
-            U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
+            //U.Tabu_search(Parent_Pool_Sol[count_pool].seq_node, Distances, NUM_CUSTOMERS, NUM_VEHICLES, Demands, Parent_Pool_Sol[count_pool].fitness, List_Nearest_Cus, Parent_Pool_Sol[count_pool].cost, MAX_CAPACITY_VH, ALPHA, MAX_ENERGY_VH, ENG_CONSUMTION, Best_Station, Best_Station_Distances);
             
-            Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+            //Parent_Pool_Sol[count_pool].is_feasible = U.find_through_station(Parent_Pool_Sol[count_pool].seq_node, Parent_Pool_Sol[count_pool].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_cost(Distances, Best_Station_Distances);
             Parent_Pool_Sol[count_pool].compute_over_cap(Demands, MAX_CAPACITY_VH);
             if(Parent_Pool_Sol[count_pool].over_capacity > 0.0) Parent_Pool_Sol[count_pool].is_feasible = false;
@@ -759,7 +762,7 @@ void cross_over(){
         Solutions[i].init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
         Solutions[i].copy_seq_node(Parent_Pool_Sol[index_pool]);
         //inspect_sol(Parent_Pool_Sol[index_pool]);
-        Solutions[i].is_feasible = U.find_through_station(Solutions[i].seq_node, Solutions[i].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
+        //Solutions[i].is_feasible = U.find_through_station(Solutions[i].seq_node, Solutions[i].is_though_stat, NUM_CUSTOMERS, NUM_VEHICLES, MAX_ENERGY_VH, ENG_CONSUMTION, Distances, Best_Station, Best_Station_Distances);
         Solutions[i].compute_cost(Distances, Best_Station_Distances);
         Solutions[i].compute_over_cap(Demands, MAX_CAPACITY_VH);
         if(Solutions[i].over_capacity > 0.0) Solutions[i].is_feasible = false;
@@ -840,6 +843,9 @@ void read_baygn29k4(char *file_src)
     fscanf(infile, "%d\n", &DIMENTION);
     fscanf(infile, "%lf\n", &MAX_CAPACITY_VH);
     NUM_CUSTOMERS = DIMENTION;
+    NUM_STATIONS = 0;
+    MAX_ENERGY_VH = 10000000.0;
+    ENG_CONSUMTION = 0.0;
     
     printf("data: dimention: %d - capacity_vh: %lf - num_vehicles: %d - num_customer: %d\n", DIMENTION, MAX_CAPACITY_VH, NUM_VEHICLES, NUM_CUSTOMERS);
     
@@ -1100,23 +1106,109 @@ void Tabu_search_Test()
 
 int main(int argc, const char * argv[]) {
     srand((unsigned)time(NULL));
-    for(int i = 0; i < 10; i++)
+//    for(int i = 0; i < 10; i++)
+//    {
+//        //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
+//        //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
+//        //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
+//        //read_gr_n48_k3((char*)"./Data/CVRP/gr-n48-k3.vrp");
+//        //read_ulysses_n22_k4((char*)"./Data/CVRP/ulysses-n22-k4.vrp");
+//        //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
+//        //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
+//        //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
+//        //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
+//        read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
+//        for(int i = 0; i < DIMENTION; i++)
+//            for(int j = 0; j < DIMENTION; j++)
+//                printf("\n(%d, %d) = %lf", i, j,Distances[i][j]);
+//        Tabu_search_Test();
+//    }
+
+    
+    FILE *fp;
+    fp = fopen("./Result/GA_CVRP.txt", "a");
+    int loop = 100;
+    //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
+    //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
+    //read_gr_n48_k3((char *)"./Data/CVRP/gr-n48-k3.vrp");
+    //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
+    //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
+    //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
+    //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
+    //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
+    //read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
+    read_hk_n48_k4((char*)"./Data/CVRP/hk-n48-k4.vrp");
+    //fprintf(fp, "\n============================================================================\n");
+    //fprintf(fp, "\n\n-->data: dimention: %d - num_customer: %d - capacity_vh: %lf - energy_vh: %lf - energy_consumtion: %lf - num_vehicles: %d\n", DIMENTION, NUM_CUSTOMERS, MAX_CAPACITY_VH, MAX_ENERGY_VH, ENG_CONSUMTION, NUM_VEHICLES);
+    fprintf(fp, "\n--------------------------------------------------------------------------------\n");
+    
+    init_population();
+    compute_meta_data();
+    int not_improve = 0;
+    for(int i = 0; i < loop; i++)
     {
-        //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
-        //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
-        //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
-        //read_gr_n48_k3((char*)"./Data/CVRP/gr-n48-k3.vrp");
-        //read_ulysses_n22_k4((char*)"./Data/CVRP/ulysses-n22-k4.vrp");
-        //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
-        //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
-        //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
-        //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
-        read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
-        for(int i = 0; i < DIMENTION; i++)
-            for(int j = 0; j < DIMENTION; j++)
-                printf("\n(%d, %d) = %lf", i, j,Distances[i][j]);
-        Tabu_search_Test();
+        build_Roulette_wheel_arr();
+        select_parent_to_pool_distinct();
+//        if(not_improve == 10)
+//        {
+//            not_improve = 0;
+//            mutation();
+//        } else
+//            cross_over();
+        
+        cross_over();
+        
+        compute_meta_data();
+        inspect_sol(Solutions[0], i);
+        if(Solutions[0].is_feasible && Solutions[0].cost < Best_Cost)
+        {
+            Best_Cost = Solutions[0].cost;
+            Index_Best = i;
+            not_improve = 0;
+        } else {
+            not_improve++;
+        }
     }
     
+    int best_sol = -1;
+    double best_cost = 10000000;
+    
+    // FIND THE BEST SEED
+    for(int i = 0; i < NUM_SOL; i++)
+    {
+        if(Solutions[i].cost < best_cost && Solutions[i].is_feasible)
+        {
+            best_sol = i;
+            best_cost = Solutions[i].cost;
+        }
+    }
+    
+    Solutions[best_sol].is_feasible = true;
+    Solutions[best_sol].compute_cost(Distances, Best_Station_Distances);
+    Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
+    if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
+    
+    fprintf(fp, "\nLần 2: BEST ROUTE FOUND: %d - Cost: %0.3lf - optimal: %.3lf - is_feasible: %d", best_sol, best_cost, OPTIMAL_VALUE, Solutions[best_sol].is_feasible);
+    fprintf(fp, "\nRoute: ");
+    for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
+    {
+        fprintf(fp, "%d -> ", Solutions[best_sol].seq_node[i]);
+    }
+    
+    printf("\nBEST ROUTE\n");
+    for(int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES; i++)
+    {
+        printf("%d, ", Solutions[best_sol].seq_node[i]);
+    }
+    printf("\n BEST SOL: %d - cost: %lf - is_feasible: %d - Optimal: %lf", best_sol, Solutions[best_sol].cost, Solutions[best_sol].is_feasible, OPTIMAL_VALUE);
+    printf("\n ----> Best_Cost: %lf - index: %d\n", Best_Cost, Index_Best);
+    fprintf(fp, "\n ----> Best_Cost: %lf - index: %d - NUM_SOL: %d - LOOP: %d\n", Best_Cost, Index_Best, NUM_SOL, loop);
+    
+    for(int i = 0; i < DIMENTION; i++)
+        for(int j = 0; j < DIMENTION; j++)
+            printf("\n(%d. %d) = %lf", i, j, Distances[i][j]);
+    
+    
+    fclose(fp);
     return 0;
 }

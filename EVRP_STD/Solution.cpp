@@ -519,7 +519,7 @@ void Solution::reset_in_select(bool *list)
 
 void Solution::Potvin_init_test(int *list_seeds, double **Distances, double *Demands, double max_cap)
 {
-    printf("\n NUM_CUSTOMER: %d - NUM_VEHICLE: %d", num_c, num_v);
+    //printf("\n NUM_CUSTOMER: %d - NUM_VEHICLE: %d", num_c, num_v);
     // route data
     int Routes[num_v][num_c];
     double curr_cost[num_v];
@@ -743,10 +743,7 @@ double Solution::compute_cost(double **Distances, double **Best_Station_Distance
         
         if(node != next_node)
         {
-            if(is_though_stat[i])
-            {
-                sum_cost += Best_Station_Distances[node][next_node];
-            } else sum_cost += Distances[node][next_node];
+            sum_cost += Distances[node][next_node];
         }
     }
     cost = sum_cost;
