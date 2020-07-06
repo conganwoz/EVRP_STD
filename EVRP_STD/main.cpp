@@ -1051,7 +1051,7 @@ void read_fri_n26_k3(char* file_name)
 void Tabu_search_Test()
 {
     FILE *fp;
-    fp = fopen("./Result/tabu_search_fri_n26_k3.txt", "a");
+    fp = fopen("./Result/tabu_search_gr_n24_k4.txt", "a");
     
     
     Solution sol;
@@ -1100,23 +1100,21 @@ void Tabu_search_Test()
 
 int main(int argc, const char * argv[]) {
     srand((unsigned)time(NULL));
-    for(int i = 0; i < 10; i++)
-    {
         //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
         //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
         //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
         //read_gr_n48_k3((char*)"./Data/CVRP/gr-n48-k3.vrp");
         //read_ulysses_n22_k4((char*)"./Data/CVRP/ulysses-n22-k4.vrp");
+        //read_hk_n48_k4((char *)"./Data/CVRP/hk-n48-k4.vrp");
         //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
-        //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
+        read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
         //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
         //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
-        read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
+        //read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
         for(int i = 0; i < DIMENTION; i++)
             for(int j = 0; j < DIMENTION; j++)
                 printf("\n(%d, %d) = %lf", i, j,Distances[i][j]);
         Tabu_search_Test();
-    }
     
     return 0;
 }

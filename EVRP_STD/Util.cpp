@@ -3298,7 +3298,7 @@ void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, 
 //    int max_tabu = (int)((num_c + num_v)*0.15);
 //    int tabu_num = Rand(min_tabu, max_tabu);
     //int tabu_num = (int)(ran)
-    int loop = 300;
+    int loop = 400;
     double best_fitness = 100000.0;
     double best_cost = 1000000.0;
     int index_best_tabu = 0;
@@ -3376,7 +3376,7 @@ void Util::Tabu_search_cvrp(int *seq, double **Distances, int num_c, int num_v, 
     }
     
     FILE* fp;
-    fp = fopen("./Result/tabu_search_fri_n26_k3.txt", "a");
+    fp = fopen("./Result/tabu_search_gr_n24_k4.txt", "a");
     fprintf(fp, "\n================================================================\n");
     fprintf(fp, "\nLoop: %d - Num_Tabu: %d - Best_fitness: %lf - index: %d\n",loop, tabu_num, best_fitness, index_best_tabu);
     fclose(fp);

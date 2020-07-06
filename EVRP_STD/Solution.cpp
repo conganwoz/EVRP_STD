@@ -592,7 +592,7 @@ void Solution::Potvin_init_test(int *list_seeds, double **Distances, double *Dem
                     int prev_node = Routes[r][i];
                     int next_node = Routes[r][i + 1];
                     if(next_node >= num_c) next_node = 0;
-                    double new_cost = curr_cost[r] + (Distances[prev_node][cus] + Distances[next_node][cus] - Distances[prev_node][next_node]);
+                    double new_cost = (Distances[prev_node][cus] + Distances[next_node][cus] - Distances[prev_node][next_node]);
                     if(new_cost < best_cost_insert)
                     {
                         best_cost_insert = new_cost;
