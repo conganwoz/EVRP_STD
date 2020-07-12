@@ -72,7 +72,7 @@ bool Is_In_Pool[NUM_SOL];
 int Parent_Pool[NUM_SOL];
 
 //Solution Parent_Pool_Sol[NUM_SOL];
-int Index_Best_Sols[(int)(NUM_SOL * 0.3)];
+int Index_Best_Sols[(int)(NUM_SOL * 0.1)];
 
 // data for nearest customers
 
@@ -97,9 +97,9 @@ void create_space_mem()
     Best_Station_Distances = (double **)malloc(NUM_CUSTOMERS * sizeof(double *));
     
     Solutions = (Solution *)malloc(NUM_SOL *sizeof(Solution));
-    Route_In_Pool = (int **)malloc((int)(NUM_SOL * 0.7) * sizeof(int*));
-    Though_Stattion_In_Pool = (bool **)malloc((int)(NUM_SOL * 0.7) * sizeof(bool *));
-    Is_Feasible_Pool = (bool*)malloc((int)(NUM_SOL * 0.7) * sizeof(bool));
+    Route_In_Pool = (int **)malloc((int)(NUM_SOL * 0.9) * sizeof(int*));
+    Though_Stattion_In_Pool = (bool **)malloc((int)(NUM_SOL * 0.9) * sizeof(bool *));
+    Is_Feasible_Pool = (bool*)malloc((int)(NUM_SOL * 0.9) * sizeof(bool));
     List_Nearest_Cus = (int **)malloc(NUM_CUSTOMERS * sizeof(int*));
     
     List_Customers = (Customer*) malloc(NUM_CUSTOMERS * sizeof(Customer));
@@ -119,7 +119,7 @@ void create_space_mem()
     for(i = 0 ; i < NUM_SOL; i++)
     {
         Solutions[i].init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
-        if(i < (int)(NUM_SOL * 0.7))
+        if(i < (int)(NUM_SOL * 0.9))
         {
             Route_In_Pool[i] = (int *)malloc((NUM_CUSTOMERS + NUM_VEHICLES) * sizeof(int));
             Though_Stattion_In_Pool[i] = (bool *)malloc((NUM_CUSTOMERS + NUM_VEHICLES) * sizeof(bool));
@@ -282,7 +282,7 @@ void mutation()
         seq_choosen[i] = i;
     }
     
-    int parent = (int)(rand() % (int)(NUM_SOL * 0.3)) + 1;
+    int parent = (int)(rand() % (int)(NUM_SOL * 0.1)) + 1;
     for(int i = 0; i < num_node; i++)
         seq[i] = Solutions[parent].seq_node[i];
     begin_rand = (int)(rand() % (num_node - 1)) + 1;
@@ -525,7 +525,7 @@ void select_parent_to_pool_distinct()
     int i, j, m;
     int total = (int)Roulette_Wheel_Arr[NUM_SOL - 2];
     
-    for(i = 0; i < (int)(NUM_SOL * (0.7)); i++)
+    for(i = 0; i < (int)(NUM_SOL * (0.9)); i++)
     {
         int rand_wheel = (int)(rand() % total);
         bool found = false;
@@ -620,19 +620,19 @@ void cross_over(){
     
     int count_pool = -1;
     
-    for(int s = 0; s < (int)(NUM_SOL * 0.7) / 2; s++)
+    for(int s = 0; s < (int)(NUM_SOL * 0.9) / 2; s++)
     {
         // select parent
-        int parent_1 = (int)(rand() % ((int)(NUM_SOL * 0.7) - s * 2));
+        int parent_1 = (int)(rand() % ((int)(NUM_SOL * 0.9) - s * 2));
         int temp = Parent_Pool[parent_1];
-        Parent_Pool[parent_1] = Parent_Pool[(int)(NUM_SOL * 0.7) - 1 - s * 2];
-        Parent_Pool[(int)(NUM_SOL * 0.7) - 1 - s * 2] = temp;
+        Parent_Pool[parent_1] = Parent_Pool[(int)(NUM_SOL * 0.9) - 1 - s * 2];
+        Parent_Pool[(int)(NUM_SOL * 0.9) - 1 - s * 2] = temp;
         parent_1 = temp;
         
-        int parent_2 = (int)(rand() % ((int)(NUM_SOL * 0.7) - s * 2 - 1));
+        int parent_2 = (int)(rand() % ((int)(NUM_SOL * 0.9) - s * 2 - 1));
         temp = Parent_Pool[parent_2];
-        Parent_Pool[parent_2] = Parent_Pool[(int)(NUM_SOL * 0.7) - 2 - s * 2];
-        Parent_Pool[(int)(NUM_SOL * 0.7) - 2 - s * 2] = temp;
+        Parent_Pool[parent_2] = Parent_Pool[(int)(NUM_SOL * 0.9) - 2 - s * 2];
+        Parent_Pool[(int)(NUM_SOL * 0.9) - 2 - s * 2] = temp;
         parent_2 = temp;
         
         /* ====== in permutation order 1 ====== */
@@ -770,7 +770,7 @@ void cross_over(){
     // create new pool
     select_best_feasible_sol();
     int index_pool = -1;
-    for(int i = ((int)(NUM_SOL * 0.3)); i < NUM_SOL; i++)
+    for(int i = ((int)(NUM_SOL * 0.1)); i < NUM_SOL; i++)
     {
         index_pool++;
         Solutions[i].init_mem_space(NUM_VEHICLES, NUM_CUSTOMERS);
@@ -1140,18 +1140,18 @@ int main(int argc, const char * argv[]) {
 
     
     FILE *fp;
-    fp = fopen("./Result/GA_Tabu_Search_CVRP.txt", "a");
+    fp = fopen("./Result/selection_result.txt", "a");
     int loop = 100;
     //read_baygn29k4((char *)"./Data/CVRP/bayg-n29-k4.vrp");
     //read_dantzign42k4((char *)"./Data/CVRP/dantzig-n42-k4.vrp");
     //read_gr_n48_k3((char *)"./Data/CVRP/gr-n48-k3.vrp");
     //read_baysn29k5((char *)"./Data/CVRP/bays-n29-k5.vrp");
-    //read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
+    read_swiss_n42_k5((char*)"./Data/CVRP/swiss-n42-k5.vrp");
     //read_gr_n24_k4((char*)"./Data/CVRP/gr-n24-k4.vrp");
     //read_gr_n21_k3((char*)"./Data/CVRP/gr-n21-k3.vrp");
     //read_gr_17_k3((char *)"./Data/CVRP/gr-n17-k3.vrp");
     //read_fri_n26_k3((char*)"./Data/CVRP/fri-n26-k3.vrp");
-    read_hk_n48_k4((char*)"./Data/CVRP/hk-n48-k4.vrp");
+    //read_hk_n48_k4((char*)"./Data/CVRP/hk-n48-k4.vrp");
     //fprintf(fp, "\n============================================================================\n");
     //fprintf(fp, "\n\n-->data: dimention: %d - num_customer: %d - capacity_vh: %lf - energy_vh: %lf - energy_consumtion: %lf - num_vehicles: %d\n", DIMENTION, NUM_CUSTOMERS, MAX_CAPACITY_VH, MAX_ENERGY_VH, ENG_CONSUMTION, NUM_VEHICLES);
     fprintf(fp, "\n--------------------------------------------------------------------------------\n");
@@ -1202,7 +1202,7 @@ int main(int argc, const char * argv[]) {
     Solutions[best_sol].compute_over_cap(Demands, MAX_CAPACITY_VH);
     if(Solutions[best_sol].over_capacity > 0.0) Solutions[best_sol].is_feasible = false;
     
-    fprintf(fp, "\nLần 2: BEST ROUTE FOUND: %d - Cost: %0.3lf - optimal: %.3lf - is_feasible: %d", best_sol, best_cost, OPTIMAL_VALUE, Solutions[best_sol].is_feasible);
+    fprintf(fp, "\nLần 2: BEST ROUTE FOUND: %d - Cost: %.3lf - optimal: %.3lf - is_feasible: %d", best_sol, best_cost, OPTIMAL_VALUE, Solutions[best_sol].is_feasible);
     fprintf(fp, "\nRoute: ");
     for (int i = 0; i < NUM_CUSTOMERS + NUM_VEHICLES + 1; i++)
     {
