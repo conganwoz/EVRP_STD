@@ -602,20 +602,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EVRP_STD/main.cpp"
-            timestampString = "614770272.456"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1121"
-            endingLineNumber = "1121">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EVRP_STD/main.cpp"
             timestampString = "614770272.456068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
